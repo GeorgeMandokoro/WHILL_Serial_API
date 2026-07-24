@@ -648,12 +648,14 @@
       { id: 11, name: 'SET_MAX_SPEED_MODE' },
       { id: 12, name: 'SET_JOYSTICK_DIRECTION' },
     ];
-    // Commands advertised in the capability map (subset shown by the Tester).
-    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 9, 10, 11, 12];
+    // Commands advertised in the capability map (public set, fixed per SM Serial API version).
+    // Non-public (not advertised): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
+    // 12 SET_JOYSTICK_DIRECTION.
+    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 9, 10, 11];
+    // Public Dataset1 offsets. Non-public: 0 low_battery_level / 1 sounds_buzzer / 4 joystick_direction.
     const CAP_DATA_FIELDS = [
       { offset: 2,  name: 'Joystick Lock' },
       { offset: 3,  name: 'Max Speed Mode' },
-      { offset: 4,  name: 'Joystick Direction' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -1147,7 +1149,7 @@
           }
           break;
         }
-        case 0x06: { // SET_BATTERY_SAVING (deprecated)
+        case 0x06: { // SET_BATTERY_SAVING (non-public; SM forwards to MC, buzzer is raw 0-255)
           name = 'SET_BATTERY_SAVING';
           const lvl = params[0] ?? 0, bz = params[1] ?? 0;
           fields = [['Level', lvl], ['Buzzer', bz]];

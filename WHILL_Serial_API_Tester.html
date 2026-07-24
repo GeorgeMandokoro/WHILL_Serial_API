@@ -1016,7 +1016,7 @@
           <button id="get-capability-info-button" type="button" class="custom-command-button" style="font-size: 11pt; padding: 6px 14px;" disabled="">Refresh</button>
           <span style="font-weight: bold; color: #0075B8;">API Version:</span>
           <span id="cap-api-version" style="font-family: monospace; font-weight: bold; color: #000; font-size: 13pt;">--.--</span>
-          <span id="cap-api-note" style="color: #666; font-size: 9pt;">(varies with the connected MC firmware)</span>
+          <span id="cap-api-note" style="color: #666; font-size: 9pt;">(fixed per Service Module Serial API version)</span>
         </div>
         <div style="display: flex; gap: 8px; align-items: stretch;">
           <div class="motor-status-card" style="background: linear-gradient(135deg, #e6f6f5 0%, #cfeeec 100%); border: 2px solid #4DBCB6; border-radius: 8px; padding: 8px; flex: 1;">
@@ -1232,19 +1232,6 @@
         </div>
       </div>
 
-      <div class="cmd-card">
-        <div class="cmd-title">SET_JOYSTICK_DIRECTION</div>
-        <div class="cmd-row">
-          <label for="joystick-direction-input">Direction <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="joystick-direction-input" class="custom-command-input" value="0" min="-128" max="127">
-          <span class="cmd-hint">-128..127</span>
-        </div>
-        <div class="cmd-actions">
-          <button id="send-set-joystick-direction-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-joystick-direction-hex-display" class="cmd-hex">0xAF 0x03 0x0C 0x00 0xA0</span>
-        </div>
-      </div>
-
       <div class="cmd-card deprecated">
         <div class="cmd-title">SET_BATTERY_SAVING <span class="dep-tag">Deprecated</span></div>
         <div class="cmd-row">
@@ -1273,6 +1260,19 @@
         <div class="cmd-actions">
           <button id="send-get-device-info-button" type="button" class="custom-command-button" disabled="">Send</button>
           <span id="get-device-info-hex-display" class="cmd-hex">0xAF 0x03 0x07 0x00 0xAB</span>
+        </div>
+      </div>
+
+      <div class="cmd-card deprecated">
+        <div class="cmd-title">RESERVED_12 <span class="dep-tag">Reserved</span></div>
+        <div class="cmd-row">
+          <label for="joystick-direction-input">Direction <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="joystick-direction-input" class="custom-command-input" value="0" min="-128" max="127">
+          <span class="cmd-hint">-128..127</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-set-joystick-direction-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-joystick-direction-hex-display" class="cmd-hex">0xAF 0x03 0x0C 0x00 0xA0</span>
         </div>
       </div>
       </div>
@@ -1977,6 +1977,9 @@
     }
 
     /* ===== Device Capability panel (API version / available commands / available data) ===== */
+    // Public command set (advertised in the capability map). Fixed per SM Serial API version.
+    // Non-public (not listed): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
+    // 12 SET_JOYSTICK_DIRECTION.
     const CAP_COMMANDS = [
       { id: 0,  name: 'START_SENDING_DATA' },
       { id: 1,  name: 'STOP_SENDING_DATA' },
@@ -1987,12 +1990,12 @@
       { id: 9,  name: 'GET_CAPABILITY' },
       { id: 10, name: 'SET_JOYSTICK_LOCK' },
       { id: 11, name: 'SET_MAX_SPEED_MODE' },
-      { id: 12, name: 'SET_JOYSTICK_DIRECTION' },
     ];
+    // Public Dataset1 offsets. Non-public (not listed): 0 low_battery_level / 1 sounds_buzzer /
+    // 4 joystick_direction.
     const CAP_DATA_FIELDS = [
       { offset: 2,  name: 'Joystick Lock' },
       { offset: 3,  name: 'Max Speed Mode' },
-      { offset: 4,  name: 'Joystick Direction' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -2013,7 +2016,7 @@
     let capabilityExpectTimeout = null;
     let capabilityBuffer = new Uint8Array(0);
     let capabilityReceived = false;
-    const CAP_API_NOTE_DEFAULT = '(varies with the connected MC firmware)';
+    const CAP_API_NOTE_DEFAULT = '(fixed per Service Module Serial API version)';
 
     function capBitSet(map, id) {
       const byteIndex = Math.floor(id / 8);
