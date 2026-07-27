@@ -896,8 +896,8 @@
                   <span id="main-power-status" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Speed Mode:</span>
-                  <span id="main-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Device Lock:</span>
+                  <span id="main-device-lock" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
                   <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Error:</span>
@@ -948,16 +948,16 @@
                   <span id="main-joystick-turn" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Lock:</span>
-                  <span id="main-joystick-lock" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Speed Mode:</span>
+                  <span id="main-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
                   <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Max Speed Mode:</span>
                   <span id="main-max-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Direction:</span>
-                  <span id="main-joystick-direction" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Joystick Lock:</span>
+                  <span id="main-joystick-lock" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
               </div>
             </div>
@@ -1021,11 +1021,11 @@
         <div style="display: flex; gap: 8px; align-items: stretch;">
           <div class="motor-status-card" style="background: linear-gradient(135deg, #e6f6f5 0%, #cfeeec 100%); border: 2px solid #4DBCB6; border-radius: 8px; padding: 8px; flex: 1;">
             <div class="motor-status-header" style="font-weight: bold; color: #2e7d32; margin-bottom: 6px; text-align: center; font-size: 11pt;">✅ Available Commands</div>
-            <div id="cap-command-list" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(6, auto); grid-auto-flow: column; gap: 2px 12px; font-size: 9pt; color: #000;">-</div>
+            <div id="cap-command-list" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(7, auto); grid-auto-flow: column; gap: 2px 10px; font-size: 8pt; white-space: nowrap; color: #000;">-</div>
           </div>
           <div class="motor-status-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #0075B8; border-radius: 8px; padding: 8px; flex: 1;">
             <div class="motor-status-header" style="font-weight: bold; color: #0075B8; margin-bottom: 6px; text-align: center; font-size: 11pt;">📊 Available Data (Dataset1)</div>
-            <div id="cap-data-list" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(9, auto); grid-auto-flow: column; gap: 2px 12px; font-size: 9pt; color: #000;">-</div>
+            <div id="cap-data-list" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(9, auto); grid-auto-flow: column; gap: 2px 10px; font-size: 8pt; white-space: nowrap; color: #000;">-</div>
           </div>
         </div>
       </div>
@@ -1058,7 +1058,7 @@
         <div class="cmd-title">Custom Raw Command</div>
         <div class="cmd-row">
           <label for="raw-command-input">Bytes (hex)</label>
-          <input type="text" id="raw-command-input" class="custom-command-input" value="0xAF 0x03 0x0C 0x00 0xA0" style="width: 340px; text-align: left; font-family: monospace;">
+          <input type="text" id="raw-command-input" class="custom-command-input" value="0xAF 0x03 0x09 0x00 0xA5" style="width: 340px; text-align: left; font-family: monospace;">
         </div>
         <div class="cmd-row">
           <label><input type="checkbox" id="raw-auto-frame"> Auto-wrap (add 0xAF + length + checksum)</label>
@@ -1066,7 +1066,7 @@
         </div>
         <div class="cmd-actions">
           <button id="send-raw-command-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="raw-command-hex-display" class="cmd-hex">0xAF 0x03 0x0C 0x00 0xA0</span>
+          <span id="raw-command-hex-display" class="cmd-hex">0xAF 0x03 0x09 0x00 0xA5</span>
         </div>
       </div>
 
@@ -1198,15 +1198,6 @@
       </div>
 
       <div class="cmd-card">
-        <div class="cmd-title">GET_CAPABILITY</div>
-        <div class="cmd-row"><span class="cmd-hint">No parameter. Returns API version + command/data maps.</span></div>
-        <div class="cmd-actions">
-          <button id="send-get-capability-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="get-capability-hex-display" class="cmd-hex">0xAF 0x02 0x09 0xA4</span>
-        </div>
-      </div>
-
-      <div class="cmd-card">
         <div class="cmd-title">SET_JOYSTICK_LOCK</div>
         <div class="cmd-row">
           <label for="joystick-lock-input">Lock 1 / Unlock 0 <span class="cmd-sub">(B4)</span></label>
@@ -1229,6 +1220,65 @@
         <div class="cmd-actions">
           <button id="send-set-max-speed-mode-button" type="button" class="custom-command-button" disabled="">Send</button>
           <span id="set-max-speed-mode-hex-display" class="cmd-hex">0xAF 0x03 0x0B 0x00 0xA7</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">SET_SPEED_LEVEL</div>
+        <div class="cmd-row">
+          <label for="speed-level-input">Speed Level <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="speed-level-input" class="custom-command-input" value="1" min="0" max="255">
+          <span class="cmd-hint">1-4</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-set-speed-level-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-speed-level-hex-display" class="cmd-hex">0xAF 0x03 0x0C 0x01 0xA1</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">SOUND_HORN</div>
+        <div class="cmd-row">
+          <label for="horn-input">Sound 1 <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="horn-input" class="custom-command-input" value="1" min="0" max="255">
+          <span class="cmd-hint">1=sound</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-sound-horn-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="sound-horn-hex-display" class="cmd-hex">0xAF 0x03 0x0D 0x01 0xA0</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">SET_DEVICE_LOCK</div>
+        <div class="cmd-row">
+          <label for="device-lock-input">Lock 1 / Unlock 0 <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="device-lock-input" class="custom-command-input" value="0" min="0" max="255">
+          <span class="cmd-hint">0-255</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-set-device-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-device-lock-hex-display" class="cmd-hex">0xAF 0x03 0x0E 0x00 0xA2</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">GET_DEVICE_LOCK</div>
+        <div class="cmd-row">
+          <span class="cmd-hint">Request current lock state (no parameter). Reply: 1=Locked / 0=Unlocked</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-get-device-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="get-device-lock-hex-display" class="cmd-hex">0xAF 0x02 0x0F 0xA2</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">GET_CAPABILITY</div>
+        <div class="cmd-row"><span class="cmd-hint">No parameter. Returns API version + command/data maps.</span></div>
+        <div class="cmd-actions">
+          <button id="send-get-capability-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="get-capability-hex-display" class="cmd-hex">0xAF 0x02 0x10 0xBD</span>
         </div>
       </div>
 
@@ -1264,7 +1314,7 @@
       </div>
 
       <div class="cmd-card deprecated">
-        <div class="cmd-title">RESERVED_12 <span class="dep-tag">Reserved</span></div>
+        <div class="cmd-title">RESERVED_9 <span class="dep-tag">Reserved</span></div>
         <div class="cmd-row">
           <label for="joystick-direction-input">Direction <span class="cmd-sub">(B4)</span></label>
           <input type="number" id="joystick-direction-input" class="custom-command-input" value="0" min="-128" max="127">
@@ -1272,9 +1322,10 @@
         </div>
         <div class="cmd-actions">
           <button id="send-set-joystick-direction-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-joystick-direction-hex-display" class="cmd-hex">0xAF 0x03 0x0C 0x00 0xA0</span>
+          <span id="set-joystick-direction-hex-display" class="cmd-hex">0xAF 0x03 0x09 0x00 0xA5</span>
         </div>
       </div>
+
       </div>
     </div>
     </main>
@@ -1370,6 +1421,25 @@
     const maxSpeedModeInput = document.getElementById('max-speed-mode-input');
     const sendSetMaxSpeedModeButton = document.getElementById('send-set-max-speed-mode-button');
     const setMaxSpeedModeHexDisplay = document.getElementById('set-max-speed-mode-hex-display');
+
+    // SET_DEVICE_LOCK command elements
+    const deviceLockInput = document.getElementById('device-lock-input');
+    const sendSetDeviceLockButton = document.getElementById('send-set-device-lock-button');
+    const setDeviceLockHexDisplay = document.getElementById('set-device-lock-hex-display');
+
+    // SOUND_HORN command elements
+    const hornInput = document.getElementById('horn-input');
+    const sendSoundHornButton = document.getElementById('send-sound-horn-button');
+    const soundHornHexDisplay = document.getElementById('sound-horn-hex-display');
+
+    // SET_SPEED_LEVEL command elements
+    const speedLevelInput = document.getElementById('speed-level-input');
+    const sendSetSpeedLevelButton = document.getElementById('send-set-speed-level-button');
+    const setSpeedLevelHexDisplay = document.getElementById('set-speed-level-hex-display');
+
+    // GET_DEVICE_LOCK command elements (parameterless request)
+    const sendGetDeviceLockButton = document.getElementById('send-get-device-lock-button');
+    const getDeviceLockHexDisplay = document.getElementById('get-device-lock-hex-display');
 
     // RESERVED_7 (GetDeviceInfo) command elements
     const getDeviceInfoInput = document.getElementById('get-device-info-input');
@@ -1584,8 +1654,8 @@
       document.getElementById('main-motor-speed-left').textContent = '-';
       document.getElementById('main-joystick-forward').textContent = '-';
       document.getElementById('main-joystick-turn').textContent = '-';
-      document.getElementById('main-joystick-direction').textContent = '-';
       document.getElementById('main-joystick-lock').textContent = '-';
+      document.getElementById('main-device-lock').textContent = '-';
       document.getElementById('main-max-speed-mode').textContent = '-';
 
       // Reset color
@@ -1625,11 +1695,10 @@
       const mainJoystickTurnSigned = status.joystickTurn > 127 ? status.joystickTurn - 256 : status.joystickTurn;
       document.getElementById('main-joystick-forward').textContent = mainJoystickForwardSigned;
       document.getElementById('main-joystick-turn').textContent = mainJoystickTurnSigned;
-      // Joystick direction angle set by SET_JOYSTICK_DIRECTION (signed 1-byte, 2deg resolution)
-      const mainJoystickDirectionSigned = status.joystickDirection > 127 ? status.joystickDirection - 256 : status.joystickDirection;
-      document.getElementById('main-joystick-direction').textContent = `${mainJoystickDirectionSigned * 2}°`;
       // Joystick lock state set by SET_JOYSTICK_LOCK (1: Locked / other: Unlocked)
       document.getElementById('main-joystick-lock').textContent = status.joystickLock === 1 ? 'Locked' : 'Unlocked';
+      // Device lock state set by SET_DEVICE_LOCK (1: Locked / other: Unlocked)
+      document.getElementById('main-device-lock').textContent = status.deviceLock === 1 ? 'Locked' : 'Unlocked';
       // Max speed mode set by SET_MAX_SPEED_MODE (display +1 to match System "Speed Mode": 0->1, 1->2, ...)
       document.getElementById('main-max-speed-mode').textContent = status.maxSpeedMode + 1;
 
@@ -1915,8 +1984,8 @@
     });
 
     // Version response check function. Accepts both response formats:
-    //   current FW (GetDeviceInfo(0)) : AF 04 00 [major] [minor] [cs]  (6 bytes)
-    //   legacy  FW (GetFwVersion)     : AF 03 [major] [minor] [cs]     (5 bytes)
+    //   current FW (GetDeviceInfo(0)) : AF 09 07 00 [sm_maj][sm_min][hmi_maj][hmi_min][mc_maj][mc_min] [cs]  (11 bytes)
+    //   legacy  FW (GetFwVersion)     : AF 03 [major] [minor] [cs]                                          (5 bytes)
     function checkVersionResponse(data) {
       // Add data to buffer
       const newBuffer = new Uint8Array(receivedBuffer.length + data.length);
@@ -1927,10 +1996,10 @@
       if (waitingForVersionResponse && receivedBuffer.length >= 2 && receivedBuffer[0] === 0xAF) {
         let majorVersion = null;
         let minorVersion = null;
-        if (receivedBuffer[1] === 0x04 && receivedBuffer.length >= 6) {
-          // GetDeviceInfo(0): AF 04 00 major minor cs
-          majorVersion = receivedBuffer[3];
-          minorVersion = receivedBuffer[4];
+        if (receivedBuffer[1] === 0x09 && receivedBuffer[2] === 0x07 && receivedBuffer.length >= 11) {
+          // GetDeviceInfo(0): AF 09 [cmd 0x07][type 0x00] sm_maj sm_min hmi_maj hmi_min mc_maj mc_min cs
+          majorVersion = receivedBuffer[4];  // SM major
+          minorVersion = receivedBuffer[5];  // SM minor
         } else if (receivedBuffer[1] === 0x03 && receivedBuffer.length >= 5) {
           // legacy GetFwVersion: AF 03 major minor cs
           majorVersion = receivedBuffer[2];
@@ -1979,7 +2048,7 @@
     /* ===== Device Capability panel (API version / available commands / available data) ===== */
     // Public command set (advertised in the capability map). Fixed per SM Serial API version.
     // Non-public (not listed): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
-    // 12 SET_JOYSTICK_DIRECTION.
+    // 9 SET_JOYSTICK_DIRECTION.
     const CAP_COMMANDS = [
       { id: 0,  name: 'START_SENDING_DATA' },
       { id: 1,  name: 'STOP_SENDING_DATA' },
@@ -1987,15 +2056,20 @@
       { id: 3,  name: 'SET_JOYSTICK' },
       { id: 4,  name: 'SET_SPEED_PROFILE' },
       { id: 8,  name: 'SET_VELOCITY' },
-      { id: 9,  name: 'GET_CAPABILITY' },
       { id: 10, name: 'SET_JOYSTICK_LOCK' },
       { id: 11, name: 'SET_MAX_SPEED_MODE' },
+      { id: 12, name: 'SET_SPEED_LEVEL' },
+      { id: 13, name: 'SOUND_HORN' },
+      { id: 14, name: 'SET_DEVICE_LOCK' },
+      { id: 15, name: 'GET_DEVICE_LOCK' },
+      { id: 16, name: 'GET_CAPABILITY' },
     ];
     // Public Dataset1 offsets. Non-public (not listed): 0 low_battery_level / 1 sounds_buzzer /
     // 4 joystick_direction.
     const CAP_DATA_FIELDS = [
       { offset: 2,  name: 'Joystick Lock' },
       { offset: 3,  name: 'Max Speed Mode' },
+      { offset: 5,  name: 'Device Lock' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -2066,7 +2140,7 @@
     // Send GET_CAPABILITY (parameterless) once.
     async function sendGetCapabilityFrame() {
       if (!(port && port.writable)) return;
-      const bytes = [0xAF, 0x02, 0x09, 0xA4];  // GET_CAPABILITY (no parameter)
+      const bytes = [0xAF, 0x02, 0x10, 0xBD];  // GET_CAPABILITY (no parameter)
       try {
         const writer = port.writable.getWriter();
         await writer.write(new Uint8Array(bytes));
@@ -2101,7 +2175,7 @@
       }, 200);
     }
 
-    // Frame scanner for the one-shot capability response (AF 0B ..).
+    // Frame scanner for the one-shot capability response (AF 0C 10 ..).
     // Uses its own buffer so it does not interfere with the other check*Response parsers.
     function checkCapabilityResponse(data) {
       const merged = new Uint8Array(capabilityBuffer.length + data.length);
@@ -2122,13 +2196,13 @@
         for (let k = i; k < i + total - 1; k++) checksum ^= capabilityBuffer[k];
         if (checksum !== capabilityBuffer[i + total - 1]) { i++; continue; } // bad frame, resync
 
-        if (len === 0x0B && capabilityExpecting) {
-          // Combined capability response: AF 0B [api_major] [api_minor] [cmd_map 0..3] [data_map 0..3] [cs]
+        if (len === 0x0C && capabilityBuffer[i + 2] === 0x10 && capabilityExpecting) {
+          // Combined capability response: AF 0C [cmd 0x10] [api_major] [api_minor] [cmd_map 0..3] [data_map 0..3] [cs]
           capabilityReceived = true;
-          const apiMajor = capabilityBuffer[i + 2];
-          const apiMinor = capabilityBuffer[i + 3];
-          capCommandMap  = capabilityBuffer.slice(i + 4, i + 8);
-          capDataMap     = capabilityBuffer.slice(i + 8, i + 12);
+          const apiMajor = capabilityBuffer[i + 3];
+          const apiMinor = capabilityBuffer[i + 4];
+          capCommandMap  = capabilityBuffer.slice(i + 5, i + 9);
+          capDataMap     = capabilityBuffer.slice(i + 9, i + 13);
           const apiEl = document.getElementById('cap-api-version');
           if (apiEl) apiEl.textContent = `${apiMajor}.${apiMinor.toString().padStart(2, '0')}`;
           const noteEl = document.getElementById('cap-api-note');
@@ -2163,6 +2237,7 @@
               checkSpeedProfileResponse(value);
               checkMotorStatusResponse(value);
               checkCapabilityResponse(value);
+              checkDeviceLockResponse(value);
             }
           }
         } catch (error) {
@@ -2198,6 +2273,10 @@
         sendSetJoystickDirectionButton.disabled = false;
         sendSetJoystickLockButton.disabled = false;
         sendSetMaxSpeedModeButton.disabled = false;
+        sendSetDeviceLockButton.disabled = false;
+        sendSoundHornButton.disabled = false;
+        sendSetSpeedLevelButton.disabled = false;
+        sendGetDeviceLockButton.disabled = false;
         sendGetDeviceInfoButton.disabled = false;
         sendGetCapabilityButton.disabled = false;
         sendRawCommandButton.disabled = false;
@@ -2252,6 +2331,10 @@
         sendSetJoystickDirectionButton.disabled = true;
         sendSetJoystickLockButton.disabled = true;
         sendSetMaxSpeedModeButton.disabled = true;
+        sendSetDeviceLockButton.disabled = true;
+        sendSoundHornButton.disabled = true;
+        sendSetSpeedLevelButton.disabled = true;
+        sendGetDeviceLockButton.disabled = true;
         sendGetDeviceInfoButton.disabled = true;
         sendGetCapabilityButton.disabled = true;
         sendRawCommandButton.disabled = true;
@@ -2326,6 +2409,10 @@
         sendSetJoystickDirectionButton.disabled = true;
         sendSetJoystickLockButton.disabled = true;
         sendSetMaxSpeedModeButton.disabled = true;
+        sendSetDeviceLockButton.disabled = true;
+        sendSoundHornButton.disabled = true;
+        sendSetSpeedLevelButton.disabled = true;
+        sendGetDeviceLockButton.disabled = true;
         sendGetDeviceInfoButton.disabled = true;
         sendGetCapabilityButton.disabled = true;
         sendRawCommandButton.disabled = true;
@@ -2806,7 +2893,8 @@
             const joystickLock = motorStatusBuffer[dataStart + 2];       // Joystick lock state 1:Lock / 0:Unlock set by SET_JOYSTICK_LOCK (6th Byte)
             const maxSpeedMode = motorStatusBuffer[dataStart + 3];       // Max speed mode set by SET_MAX_SPEED_MODE (7th Byte)
             const joystickDirection = motorStatusBuffer[dataStart + 4];  // Joystick direction angle set by SET_JOYSTICK_DIRECTION (8th Byte)
-            // Ignore 9-15th bytes (reserved)
+            const deviceLock = motorStatusBuffer[dataStart + 5];         // Device lock state 1:Lock / 0:Unlock set by SET_DEVICE_LOCK (9th Byte)
+            // Ignore 10-15th bytes (reserved)
             const joystickForward = motorStatusBuffer[dataStart + 12];  // Joystick (Forward/Backward Direction) (16th Byte: 0x56)
             const joystickTurn = motorStatusBuffer[dataStart + 13];     // Joystick (Left/Right Turn Direction) (17th Byte: 0x00)
             const batteryLevel = motorStatusBuffer[dataStart + 14];     // Battery level (18th Byte: 0x05)
@@ -2823,7 +2911,7 @@
 
             // Debug: Output received data to console
             console.log('Motor status data received:', {
-              battery, buzzer, joystickDirection, joystickLock, maxSpeedMode,
+              battery, buzzer, joystickDirection, joystickLock, deviceLock, maxSpeedMode,
               joystickForward, joystickTurn, batteryLevel,
               batteryCurrent, motorAngleRight, motorAngleLeft, motorSpeedRight, motorSpeedLeft,
               power, speedMode, errorCode, angleCounter
@@ -2831,7 +2919,7 @@
 
             // Update UI
             updateMotorStatusDisplay({
-              battery, buzzer, joystickDirection, joystickLock, maxSpeedMode,
+              battery, buzzer, joystickDirection, joystickLock, deviceLock, maxSpeedMode,
               joystickForward, joystickTurn, batteryLevel,
               batteryCurrent, motorAngleRight, motorAngleLeft, motorSpeedRight, motorSpeedLeft,
               power, speedMode, errorCode, angleCounter
@@ -3241,8 +3329,8 @@
       }
 
       // Build SET_JOYSTICK_DIRECTION command
-      // Format: 0xAF, 0x03, 0x0C, [Joystick Direction], [Checksum]
-      const header = [0xAF, 0x03, 0x0C, angle & 0xFF];
+      // Format: 0xAF, 0x03, 0x09, [Joystick Direction], [Checksum]
+      const header = [0xAF, 0x03, 0x09, angle & 0xFF];
       let checksum = 0;
       header.forEach(byte => {
         checksum ^= byte;
@@ -3286,6 +3374,93 @@
 
     // Real-time preview update on SET_JOYSTICK_LOCK input value change
     joystickLockInput.addEventListener('input', updateSetJoystickLockPreview);
+
+    // SET_DEVICE_LOCK command real-time preview update function
+    function updateSetDeviceLockPreview() {
+      const lock = parseInt(deviceLockInput.value) || 0;
+
+      // Input value validation
+      if (lock < 0 || lock > 255) {
+        setDeviceLockHexDisplay.textContent = 'Lock/Unlock value is invalid (0-255)';
+        setDeviceLockHexDisplay.style.color = '#E94816';
+        return;
+      }
+
+      // Build SET_DEVICE_LOCK command
+      // Format: 0xAF, 0x03, 0x0E, [Lock:1 / Unlock:0], [Checksum]
+      const header = [0xAF, 0x03, 0x0E, lock];
+      let checksum = 0;
+      header.forEach(byte => {
+        checksum ^= byte;
+      });
+
+      const setDeviceLockCommand = [...header, checksum];
+      const hexData = setDeviceLockCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+
+      setDeviceLockHexDisplay.textContent = hexData;
+      setDeviceLockHexDisplay.style.color = '#000000';
+    }
+
+    // Real-time preview update on SET_DEVICE_LOCK input value change
+    deviceLockInput.addEventListener('input', updateSetDeviceLockPreview);
+
+    // SOUND_HORN command real-time preview update function
+    function updateSoundHornPreview() {
+      const sound = parseInt(hornInput.value) || 0;
+
+      // Input value validation
+      if (sound < 0 || sound > 255) {
+        soundHornHexDisplay.textContent = 'Horn value is invalid (0-255)';
+        soundHornHexDisplay.style.color = '#E94816';
+        return;
+      }
+
+      // Build SOUND_HORN command
+      // Format: 0xAF, 0x03, 0x0D, [Sound:1], [Checksum]
+      const header = [0xAF, 0x03, 0x0D, sound];
+      let checksum = 0;
+      header.forEach(byte => {
+        checksum ^= byte;
+      });
+
+      const soundHornCommand = [...header, checksum];
+      const hexData = soundHornCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+
+      soundHornHexDisplay.textContent = hexData;
+      soundHornHexDisplay.style.color = '#000000';
+    }
+
+    // Real-time preview update on SOUND_HORN input value change
+    hornInput.addEventListener('input', updateSoundHornPreview);
+
+    // SET_SPEED_LEVEL command real-time preview update function
+    function updateSetSpeedLevelPreview() {
+      const level = parseInt(speedLevelInput.value) || 0;
+
+      // Input value validation
+      if (level < 0 || level > 255) {
+        setSpeedLevelHexDisplay.textContent = 'Speed level is invalid (0-255)';
+        setSpeedLevelHexDisplay.style.color = '#E94816';
+        return;
+      }
+
+      // Build SET_SPEED_LEVEL command
+      // Format: 0xAF, 0x03, 0x0C, [Speed level 1-4], [Checksum]
+      const header = [0xAF, 0x03, 0x0C, level];
+      let checksum = 0;
+      header.forEach(byte => {
+        checksum ^= byte;
+      });
+
+      const setSpeedLevelCommand = [...header, checksum];
+      const hexData = setSpeedLevelCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+
+      setSpeedLevelHexDisplay.textContent = hexData;
+      setSpeedLevelHexDisplay.style.color = '#000000';
+    }
+
+    // Real-time preview update on SET_SPEED_LEVEL input value change
+    speedLevelInput.addEventListener('input', updateSetSpeedLevelPreview);
 
     // SET_MAX_SPEED_MODE command real-time preview update function
     function updateSetMaxSpeedModePreview() {
@@ -3872,8 +4047,8 @@
           }
 
           // Build SET_JOYSTICK_DIRECTION command
-          // Format: 0xAF, 0x03, 0x0C, [Joystick Direction], [Checksum]
-          const header = [0xAF, 0x03, 0x0C, angle & 0xFF];
+          // Format: 0xAF, 0x03, 0x09, [Joystick Direction], [Checksum]
+          const header = [0xAF, 0x03, 0x09, angle & 0xFF];
           let checksum = 0;
           header.forEach(byte => {
             checksum ^= byte;
@@ -3932,6 +4107,172 @@
         }
       }
     });
+
+    // SET_DEVICE_LOCKCommandSend
+    sendSetDeviceLockButton.addEventListener('click', async () => {
+      if (port && port.writable) {
+        try {
+          const lock = parseInt(deviceLockInput.value) || 0;
+
+          // Input value validation
+          if (lock < 0 || lock > 255) {
+            alert('Please enter a value between 0 and 255.');
+            return;
+          }
+
+          // Build SET_DEVICE_LOCK command
+          // Format: 0xAF, 0x03, 0x0E, [Lock:1 / Unlock:0], [Checksum]
+          const header = [0xAF, 0x03, 0x0E, lock];
+          let checksum = 0;
+          header.forEach(byte => {
+            checksum ^= byte;
+          });
+
+          const setDeviceLockCommand = new Uint8Array([...header, checksum]);
+
+          const writer = port.writable.getWriter();
+          await writer.write(setDeviceLockCommand);
+          writer.releaseLock();
+
+          const timestamp = getJapanTimeString();
+          const hexData = Array.from(setDeviceLockCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SET_DEVICE_LOCK: ${hexData}\n`;
+          appendLog(message);
+
+        } catch (error) {
+          console.error('SET_DEVICE_LOCK Send Error:', error);
+        }
+      }
+    });
+
+    // SOUND_HORNCommandSend
+    sendSoundHornButton.addEventListener('click', async () => {
+      if (port && port.writable) {
+        try {
+          const sound = parseInt(hornInput.value) || 0;
+
+          // Input value validation
+          if (sound < 0 || sound > 255) {
+            alert('Please enter a value between 0 and 255.');
+            return;
+          }
+
+          // Build SOUND_HORN command
+          // Format: 0xAF, 0x03, 0x0D, [Sound:1], [Checksum]
+          const header = [0xAF, 0x03, 0x0D, sound];
+          let checksum = 0;
+          header.forEach(byte => {
+            checksum ^= byte;
+          });
+
+          const soundHornCommand = new Uint8Array([...header, checksum]);
+
+          const writer = port.writable.getWriter();
+          await writer.write(soundHornCommand);
+          writer.releaseLock();
+
+          const timestamp = getJapanTimeString();
+          const hexData = Array.from(soundHornCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SOUND_HORN: ${hexData}\n`;
+          appendLog(message);
+
+        } catch (error) {
+          console.error('SOUND_HORN Send Error:', error);
+        }
+      }
+    });
+
+    // SET_SPEED_LEVELCommandSend
+    sendSetSpeedLevelButton.addEventListener('click', async () => {
+      if (port && port.writable) {
+        try {
+          const level = parseInt(speedLevelInput.value) || 0;
+
+          // Input value validation
+          if (level < 0 || level > 255) {
+            alert('Please enter a value between 0 and 255.');
+            return;
+          }
+
+          // Build SET_SPEED_LEVEL command
+          // Format: 0xAF, 0x03, 0x0C, [Speed level 1-4], [Checksum]
+          const header = [0xAF, 0x03, 0x0C, level];
+          let checksum = 0;
+          header.forEach(byte => {
+            checksum ^= byte;
+          });
+
+          const setSpeedLevelCommand = new Uint8Array([...header, checksum]);
+
+          const writer = port.writable.getWriter();
+          await writer.write(setSpeedLevelCommand);
+          writer.releaseLock();
+
+          const timestamp = getJapanTimeString();
+          const hexData = Array.from(setSpeedLevelCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SET_SPEED_LEVEL: ${hexData}\n`;
+          appendLog(message);
+
+        } catch (error) {
+          console.error('SET_SPEED_LEVEL Send Error:', error);
+        }
+      }
+    });
+
+    // GET_DEVICE_LOCKCommandSend (parameterless request; reply is AF 02 [lock] cs)
+    let deviceLockExpecting = false;
+    let deviceLockBuffer = new Uint8Array(0);
+    sendGetDeviceLockButton.addEventListener('click', async () => {
+      if (port && port.writable) {
+        try {
+          const getDeviceLockCommand = new Uint8Array([0xAF, 0x02, 0x0F, 0xA2]);
+          deviceLockExpecting = true;
+          deviceLockBuffer = new Uint8Array(0);
+
+          const writer = port.writable.getWriter();
+          await writer.write(getDeviceLockCommand);
+          writer.releaseLock();
+
+          const timestamp = getJapanTimeString();
+          const hexData = Array.from(getDeviceLockCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          appendLog(`[${timestamp}] Send GET_DEVICE_LOCK: ${hexData}\n`);
+        } catch (error) {
+          console.error('GET_DEVICE_LOCK Send Error:', error);
+        }
+      }
+    });
+
+    // Frame scanner for the GET_DEVICE_LOCK response: AF 03 [cmd 0x0F] [lock] cs
+    // Self-identifying by the command id (0x0F), so no ambiguity with the power-on response.
+    function checkDeviceLockResponse(data) {
+      if (!deviceLockExpecting) return;
+      const merged = new Uint8Array(deviceLockBuffer.length + data.length);
+      merged.set(deviceLockBuffer);
+      merged.set(data, deviceLockBuffer.length);
+      deviceLockBuffer = merged;
+
+      let i = 0;
+      while (i + 5 <= deviceLockBuffer.length) {
+        if (deviceLockBuffer[i] !== 0xAF) { i++; continue; }
+        const len = deviceLockBuffer[i + 1];
+        const cmd = deviceLockBuffer[i + 2];
+        const lock = deviceLockBuffer[i + 3];
+        const cs = deviceLockBuffer[i + 4];
+        if (len === 0x03 && cmd === 0x0F &&
+            cs === ((0xAF ^ 0x03 ^ 0x0F ^ lock) & 0xFF)) {
+          const timestamp = getJapanTimeString();
+          appendLog(`[${timestamp}] Device Lock Response: ${lock === 1 ? 'Locked (1)' : 'Unlocked (0)'}\n`);
+          deviceLockExpecting = false;
+          deviceLockBuffer = new Uint8Array(0);
+          return;
+        }
+        i++;
+      }
+      // 直近4バイトは次チャンクとの結合のため残す。
+      if (deviceLockBuffer.length > 4) {
+        deviceLockBuffer = deviceLockBuffer.slice(deviceLockBuffer.length - 4);
+      }
+    }
 
     // SET_MAX_SPEED_MODECommandSend
     sendSetMaxSpeedModeButton.addEventListener('click', async () => {
@@ -4012,8 +4353,8 @@
       if (port && port.writable) {
         try {
           // Build GET_CAPABILITY command (no parameter)
-          // Format: 0xAF, 0x02, 0x09, [Checksum]
-          const getCapabilityCommand = new Uint8Array([0xAF, 0x02, 0x09, 0xA4]);
+          // Format: 0xAF, 0x02, 0x10, [Checksum]
+          const getCapabilityCommand = new Uint8Array([0xAF, 0x02, 0x10, 0xBD]);
 
           const writer = port.writable.getWriter();
           await writer.write(getCapabilityCommand);
@@ -4104,6 +4445,9 @@
     updateSetVelocityPreview();
     updateSetJoystickDirectionPreview();
     updateSetJoystickLockPreview();
+    updateSetDeviceLockPreview();
+    updateSoundHornPreview();
+    updateSetSpeedLevelPreview();
     updateSetMaxSpeedModePreview();
     updateGetDeviceInfoPreview();
 

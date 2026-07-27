@@ -643,19 +643,24 @@
       { id: 6,  name: 'SET_BATTERY_SAVING' },
       { id: 7,  name: 'GET_DEVICE_INFO' },
       { id: 8,  name: 'SET_VELOCITY' },
-      { id: 9,  name: 'GET_CAPABILITY' },
+      { id: 9,  name: 'SET_JOYSTICK_DIRECTION' },
       { id: 10, name: 'SET_JOYSTICK_LOCK' },
       { id: 11, name: 'SET_MAX_SPEED_MODE' },
-      { id: 12, name: 'SET_JOYSTICK_DIRECTION' },
+      { id: 12, name: 'SET_SPEED_LEVEL' },
+      { id: 13, name: 'SOUND_HORN' },
+      { id: 14, name: 'SET_DEVICE_LOCK' },
+      { id: 15, name: 'GET_DEVICE_LOCK' },
+      { id: 16, name: 'GET_CAPABILITY' },
     ];
     // Commands advertised in the capability map (public set, fixed per SM Serial API version).
     // Non-public (not advertised): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
-    // 12 SET_JOYSTICK_DIRECTION.
-    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 9, 10, 11];
+    // 9 SET_JOYSTICK_DIRECTION.
+    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 10, 11, 12, 13, 14, 15, 16];
     // Public Dataset1 offsets. Non-public: 0 low_battery_level / 1 sounds_buzzer / 4 joystick_direction.
     const CAP_DATA_FIELDS = [
       { offset: 2,  name: 'Joystick Lock' },
       { offset: 3,  name: 'Max Speed Mode' },
+      { offset: 5,  name: 'Device Lock' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -675,6 +680,7 @@
       { key: 'batterySaving',      group: 'System',  label: 'Battery Saving',  min: 0,      max: 255,   hint: 'raw' },
       { key: 'buzzer',             group: 'System',  label: 'Buzzer',          min: 0,      max: 255,   hint: 'raw' },
       { key: 'joystickLock',       group: 'Joystick',label: 'Joystick Lock',   min: 0,      max: 1,     hint: '1=lock' },
+      { key: 'deviceLock',         group: 'System',  label: 'Device Lock',     min: 0,      max: 1,     hint: '1=lock' },
       { key: 'maxSpeedMode',       group: 'Joystick',label: 'Max Speed Mode',  min: 0,      max: 255,   hint: '0-based' },
       { key: 'joystickDirection',  group: 'Joystick',label: 'Joystick Dir',    min: -128,   max: 127,   hint: '×2°' },
       { key: 'joystickForward',    group: 'Joystick',label: 'Joystick F/B',    min: -128,   max: 127,   hint: 'signed' },
@@ -695,7 +701,7 @@
     function defaultDataset1() {
       return {
         batterySaving: 19, buzzer: 0,
-        joystickLock: 0, maxSpeedMode: 3, joystickDirection: 0,
+        joystickLock: 0, deviceLock: 0, maxSpeedMode: 3, joystickDirection: 0,
         joystickForward: 0, joystickTurn: 0,
         batteryLevel: 75, batteryCurrent: 0,
         motorAngleRight: 0, motorAngleLeft: 0,
@@ -831,7 +837,8 @@
       data[2]  = d.joystickLock & 0xFF;
       data[3]  = d.maxSpeedMode & 0xFF;
       data[4]  = d.joystickDirection & 0xFF;
-      // 5..11 reserved
+      data[5]  = d.deviceLock & 0xFF;
+      // 6..11 reserved
       data[12] = d.joystickForward & 0xFF;
       data[13] = d.joystickTurn & 0xFF;
       data[14] = d.batteryLevel & 0xFF;
@@ -857,11 +864,17 @@
       const maj = state.version.major & 0xFF;
       const min = state.version.minor & 0xFF;
       return legacy
-        ? withChecksum([0xAF, 0x03, maj, min])          // legacy GetFwVersion
-        : withChecksum([0xAF, 0x04, 0x00, maj, min]);   // GetDeviceInfo(0)
+        ? withChecksum([0xAF, 0x03, maj, min])                // legacy GetFwVersion (unchanged): AF 03 maj min cs
+        // GetDeviceInfo(0): AF 09 [cmd 0x07][type 0x00] SM(maj,min) HMI(0,0) MC(0,0) cs
+        // (この Emulator は SM 版のみモデル化。HMI/MC は 0.0 で埋める)
+        : withChecksum([0xAF, 0x09, 0x07, 0x00, maj, min, 0x00, 0x00, 0x00, 0x00]);
     }
     function buildPowerOnAckFrame() {
-      return withChecksum([0xAF, 0x02, 0x52]);          // -> AF 02 52 FF
+      return withChecksum([0xAF, 0x02, 0x52]);          // -> AF 02 52 FF (released; unchanged)
+    }
+    function buildDeviceLockFrame() {
+      // AF 03 [cmd 0x0F=GET_DEVICE_LOCK] [lock] cs
+      return withChecksum([0xAF, 0x03, 0x0F, state.dataset1.deviceLock & 0xFF]);
     }
     // Build a 4-byte bitmap from a list of bit indices (byte = floor(i/8), bit = i%8).
     function buildBitMap(indices) {
@@ -872,7 +885,8 @@
     function buildCapabilityFrame() {
       const cmdMap  = buildBitMap(getEnabledCommandIds());
       const dataMap = buildBitMap(getEnabledDataOffsets());
-      return withChecksum([0xAF, 0x0B,
+      // AF 0C [cmd 0x10=GET_CAPABILITY] [api_major][api_minor] [cmdMap 4][dataMap 4] cs
+      return withChecksum([0xAF, 0x0C, 0x10,
         state.apiVersion.major & 0xFF, state.apiVersion.minor & 0xFF,
         ...cmdMap, ...dataMap]);
     }
@@ -1179,9 +1193,13 @@
           }
           break;
         }
-        case 0x09: { // GET_CAPABILITY
-          name = 'GET_CAPABILITY';
-          if (state.autoRespond) sendFrame('Capability', buildCapabilityFrame());
+        case 0x09: { // SET_JOYSTICK_DIRECTION
+          name = 'SET_JOYSTICK_DIRECTION';
+          const dir = s8(params[0] ?? 0);
+          fields = [['Direction', `${dir} (${dir * 2}°)`]];
+          state.dataset1.joystickDirection = dir & 0xFF;
+          syncDataset1Inputs();
+          updateLiveView();
           break;
         }
         case 0x0A: { // SET_JOYSTICK_LOCK
@@ -1202,13 +1220,46 @@
           updateLiveView();
           break;
         }
-        case 0x0C: { // SET_JOYSTICK_DIRECTION
-          name = 'SET_JOYSTICK_DIRECTION';
-          const dir = s8(params[0] ?? 0);
-          fields = [['Direction', `${dir} (${dir * 2}°)`]];
-          state.dataset1.joystickDirection = dir & 0xFF;
+        case 0x0C: { // SET_SPEED_LEVEL
+          name = 'SET_SPEED_LEVEL';
+          const lv = params[0] ?? 0;
+          fields = [['Speed Level', lv]];
+          // 実機は OFF/standby 時に適用。ここでは speed mode indicator(0-based) に反映して模擬する。
+          if (lv >= 1 && lv <= 4) {
+            state.dataset1.speedMode = lv - 1;
+            syncDataset1Inputs();
+            updateLiveView();
+          } else {
+            fields.push(['(ignored)', 'out of range']);
+          }
+          break;
+        }
+        case 0x0D: { // SOUND_HORN
+          name = 'SOUND_HORN';
+          const s = params[0] ?? 0;
+          fields = [['Horn', s === 1 ? 'Sound (1)' : `(ignored: ${s})`]];
+          // 瞬時トリガのため保持状態は無い（鳴動はHMI/MC側の挙動）。
+          break;
+        }
+        case 0x0E: { // SET_DEVICE_LOCK
+          name = 'SET_DEVICE_LOCK';
+          const l = params[0] ?? 0;
+          fields = [['Lock', l === 1 ? 'Locked (1)' : `Unlocked (${l})`]];
+          state.dataset1.deviceLock = (l === 1) ? 1 : 0;
           syncDataset1Inputs();
           updateLiveView();
+          break;
+        }
+        case 0x0F: { // GET_DEVICE_LOCK
+          name = 'GET_DEVICE_LOCK';
+          fields = [['Lock', state.dataset1.deviceLock === 1 ? 'Locked (1)' : 'Unlocked (0)']];
+          // 要求→応答。電源状態に依らず現在のロック状態を返す。
+          if (state.autoRespond) sendFrame('Device Lock', buildDeviceLockFrame());
+          break;
+        }
+        case 0x10: { // GET_CAPABILITY
+          name = 'GET_CAPABILITY';
+          if (state.autoRespond) sendFrame('Capability', buildCapabilityFrame());
           break;
         }
         default:
