@@ -900,12 +900,20 @@
                   <span id="main-device-lock" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Auto Power Off:</span>
+                  <span id="main-auto-power-off" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                </div>
+                <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
                   <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Error:</span>
                   <span id="main-error-code" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
-                <div class="motor-status-item" style="display: flex; justify-content: space-between;">
+                <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
                   <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Counter:</span>
                   <span id="main-angle-counter" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                </div>
+                <div class="motor-status-item" style="display: flex; justify-content: space-between;">
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Trip:</span>
+                  <span id="main-trip-distance" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
               </div>
 
@@ -948,16 +956,22 @@
                   <span id="main-joystick-turn" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
                 <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Speed Mode:</span>
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Max Speed Level:</span>
+                  <span id="main-max-speed-level" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                </div>
+                <!-- Speed Level (Selected): HMIで選択中の値。Max Speed Levelでは頭打ちにならない。 -->
+                <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Speed Level (Selected):</span>
+                  <span id="main-speed-level" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                </div>
+                <!-- Speed Level (Effective): MCが実際に適用中の値(speed_mode_indicator)。制限中はSelectedと乖離する。 -->
+                <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Speed Level (Effective):</span>
                   <span id="main-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
-                <div class="motor-status-item" style="margin-bottom: 3px; display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Max Speed Mode:</span>
-                  <span id="main-max-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
-                </div>
                 <div class="motor-status-item" style="display: flex; justify-content: space-between;">
-                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Joystick Lock:</span>
-                  <span id="main-joystick-lock" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
+                  <span class="motor-status-label" style="font-weight: bold; color: #0075B8; font-size: 9pt;">Joystick Pause:</span>
+                  <span id="main-joystick-pause" class="motor-status-value" style="color: #000; font-weight: bold; font-size: 9pt;">-</span>
                 </div>
               </div>
             </div>
@@ -1198,28 +1212,41 @@
       </div>
 
       <div class="cmd-card">
-        <div class="cmd-title">SET_JOYSTICK_LOCK</div>
+        <div class="cmd-title">SET_DEVICE_LOCK</div>
         <div class="cmd-row">
-          <label for="joystick-lock-input">Lock 1 / Unlock 0 <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="joystick-lock-input" class="custom-command-input" value="0" min="0" max="255">
+          <label for="device-lock-input">Lock 1 / Unlock 0 <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="device-lock-input" class="custom-command-input" value="0" min="0" max="255">
           <span class="cmd-hint">0-255</span>
         </div>
         <div class="cmd-actions">
-          <button id="send-set-joystick-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-joystick-lock-hex-display" class="cmd-hex">0xAF 0x03 0x0A 0x00 0xA6</span>
+          <button id="send-set-device-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-device-lock-hex-display" class="cmd-hex">0xAF 0x03 0x09 0x00 0xA5</span>
         </div>
       </div>
 
       <div class="cmd-card">
-        <div class="cmd-title">SET_MAX_SPEED_MODE</div>
+        <div class="cmd-title">SET_JOYSTICK_PAUSE</div>
         <div class="cmd-row">
-          <label for="max-speed-mode-input">Max Speed Mode <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="max-speed-mode-input" class="custom-command-input" value="0" min="0" max="255">
+          <label for="joystick-pause-input">Pause 1 / Resume 0 <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="joystick-pause-input" class="custom-command-input" value="0" min="0" max="255">
           <span class="cmd-hint">0-255</span>
         </div>
         <div class="cmd-actions">
-          <button id="send-set-max-speed-mode-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-max-speed-mode-hex-display" class="cmd-hex">0xAF 0x03 0x0B 0x00 0xA7</span>
+          <button id="send-set-joystick-pause-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-joystick-pause-hex-display" class="cmd-hex">0xAF 0x03 0x0A 0x00 0xA6</span>
+        </div>
+      </div>
+
+      <div class="cmd-card">
+        <div class="cmd-title">SET_MAX_SPEED_LEVEL</div>
+        <div class="cmd-row">
+          <label for="max-speed-level-input">Max Speed Level <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="max-speed-level-input" class="custom-command-input" value="4" min="0" max="255">
+          <span class="cmd-hint">1-4</span>
+        </div>
+        <div class="cmd-actions">
+          <button id="send-set-max-speed-level-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-max-speed-level-hex-display" class="cmd-hex">0xAF 0x03 0x0B 0x00 0xA7</span>
         </div>
       </div>
 
@@ -1250,26 +1277,26 @@
       </div>
 
       <div class="cmd-card">
-        <div class="cmd-title">SET_DEVICE_LOCK</div>
+        <div class="cmd-title">SET_AUTO_POWER_OFF</div>
         <div class="cmd-row">
-          <label for="device-lock-input">Lock 1 / Unlock 0 <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="device-lock-input" class="custom-command-input" value="0" min="0" max="255">
-          <span class="cmd-hint">0-255</span>
+          <label for="auto-power-off-input">Enable 1 / Disable 0 <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="auto-power-off-input" class="custom-command-input" value="1" min="0" max="255">
+          <span class="cmd-hint">1 = power off on inactivity (default) / 0 = stay on</span>
         </div>
         <div class="cmd-actions">
-          <button id="send-set-device-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-device-lock-hex-display" class="cmd-hex">0xAF 0x03 0x0E 0x00 0xA2</span>
+          <button id="send-set-auto-power-off-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="set-auto-power-off-hex-display" class="cmd-hex">0xAF 0x03 0x0E 0x01 0xA3</span>
         </div>
       </div>
 
       <div class="cmd-card">
-        <div class="cmd-title">GET_DEVICE_LOCK</div>
+        <div class="cmd-title">GET_SETTINGS</div>
         <div class="cmd-row">
-          <span class="cmd-hint">Request current lock state (no parameter). Reply: 1=Locked / 0=Unlocked</span>
+          <span class="cmd-hint">Request all persistent settings (no parameter). Reply: device lock / joystick pause / max speed level / speed level / auto power off / power</span>
         </div>
         <div class="cmd-actions">
-          <button id="send-get-device-lock-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="get-device-lock-hex-display" class="cmd-hex">0xAF 0x02 0x0F 0xA2</span>
+          <button id="send-get-settings-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="get-settings-hex-display" class="cmd-hex">0xAF 0x02 0x0F 0xA2</span>
         </div>
       </div>
 
@@ -1303,26 +1330,13 @@
       <div class="cmd-card deprecated">
         <div class="cmd-title">RESERVED_7 <span class="dep-tag">Reserved</span></div>
         <div class="cmd-row">
-          <label for="get-device-info-input">4th Byte <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="get-device-info-input" class="custom-command-input" value="0" min="0" max="255">
+          <label for="get-identification-input">4th Byte <span class="cmd-sub">(B4)</span></label>
+          <input type="number" id="get-identification-input" class="custom-command-input" value="0" min="0" max="255">
           <span class="cmd-hint">0-255</span>
         </div>
         <div class="cmd-actions">
-          <button id="send-get-device-info-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="get-device-info-hex-display" class="cmd-hex">0xAF 0x03 0x07 0x00 0xAB</span>
-        </div>
-      </div>
-
-      <div class="cmd-card deprecated">
-        <div class="cmd-title">RESERVED_9 <span class="dep-tag">Reserved</span></div>
-        <div class="cmd-row">
-          <label for="joystick-direction-input">Direction <span class="cmd-sub">(B4)</span></label>
-          <input type="number" id="joystick-direction-input" class="custom-command-input" value="0" min="-128" max="127">
-          <span class="cmd-hint">-128..127</span>
-        </div>
-        <div class="cmd-actions">
-          <button id="send-set-joystick-direction-button" type="button" class="custom-command-button" disabled="">Send</button>
-          <span id="set-joystick-direction-hex-display" class="cmd-hex">0xAF 0x03 0x09 0x00 0xA5</span>
+          <button id="send-get-identification-button" type="button" class="custom-command-button" disabled="">Send</button>
+          <span id="get-identification-hex-display" class="cmd-hex">0xAF 0x03 0x07 0x00 0xAB</span>
         </div>
       </div>
 
@@ -1407,20 +1421,15 @@
     const sendSetVelocityContinuousButton = document.getElementById('send-set-velocity-continuous-button');
     const setVelocityHexDisplay = document.getElementById('set-velocity-hex-display');
 
-    // SET_JOYSTICK_DIRECTION command elements
-    const joystickDirectionInput = document.getElementById('joystick-direction-input');
-    const sendSetJoystickDirectionButton = document.getElementById('send-set-joystick-direction-button');
-    const setJoystickDirectionHexDisplay = document.getElementById('set-joystick-direction-hex-display');
+    // SET_JOYSTICK_PAUSE command elements
+    const joystickPauseInput = document.getElementById('joystick-pause-input');
+    const sendSetJoystickPauseButton = document.getElementById('send-set-joystick-pause-button');
+    const setJoystickPauseHexDisplay = document.getElementById('set-joystick-pause-hex-display');
 
-    // SET_JOYSTICK_LOCK command elements
-    const joystickLockInput = document.getElementById('joystick-lock-input');
-    const sendSetJoystickLockButton = document.getElementById('send-set-joystick-lock-button');
-    const setJoystickLockHexDisplay = document.getElementById('set-joystick-lock-hex-display');
-
-    // SET_MAX_SPEED_MODE command elements
-    const maxSpeedModeInput = document.getElementById('max-speed-mode-input');
-    const sendSetMaxSpeedModeButton = document.getElementById('send-set-max-speed-mode-button');
-    const setMaxSpeedModeHexDisplay = document.getElementById('set-max-speed-mode-hex-display');
+    // SET_MAX_SPEED_LEVEL command elements
+    const maxSpeedLevelInput = document.getElementById('max-speed-level-input');
+    const sendSetMaxSpeedLevelButton = document.getElementById('send-set-max-speed-level-button');
+    const setMaxSpeedLevelHexDisplay = document.getElementById('set-max-speed-level-hex-display');
 
     // SET_DEVICE_LOCK command elements
     const deviceLockInput = document.getElementById('device-lock-input');
@@ -1437,18 +1446,23 @@
     const sendSetSpeedLevelButton = document.getElementById('send-set-speed-level-button');
     const setSpeedLevelHexDisplay = document.getElementById('set-speed-level-hex-display');
 
-    // GET_DEVICE_LOCK command elements (parameterless request)
-    const sendGetDeviceLockButton = document.getElementById('send-get-device-lock-button');
-    const getDeviceLockHexDisplay = document.getElementById('get-device-lock-hex-display');
+    // GET_SETTINGS command elements (parameterless request)
+    const sendGetSettingsButton = document.getElementById('send-get-settings-button');
+    const getSettingsHexDisplay = document.getElementById('get-settings-hex-display');
 
-    // RESERVED_7 (GetDeviceInfo) command elements
-    const getDeviceInfoInput = document.getElementById('get-device-info-input');
-    const sendGetDeviceInfoButton = document.getElementById('send-get-device-info-button');
-    const getDeviceInfoHexDisplay = document.getElementById('get-device-info-hex-display');
+    // RESERVED_7 (GetIdentification) command elements
+    const getIdentificationInput = document.getElementById('get-identification-input');
+    const sendGetIdentificationButton = document.getElementById('send-get-identification-button');
+    const getIdentificationHexDisplay = document.getElementById('get-identification-hex-display');
 
     // GET_CAPABILITY command elements (parameterless)
     const sendGetCapabilityButton = document.getElementById('send-get-capability-button');
     const getCapabilityHexDisplay = document.getElementById('get-capability-hex-display');
+
+    // SET_AUTO_POWER_OFF command elements
+    const autoPowerOffInput = document.getElementById('auto-power-off-input');
+    const sendSetAutoPowerOffButton = document.getElementById('send-set-auto-power-off-button');
+    const setAutoPowerOffHexDisplay = document.getElementById('set-auto-power-off-hex-display');
 
     // Custom Raw Command elements
     const rawCommandInput = document.getElementById('raw-command-input');
@@ -1646,17 +1660,20 @@
       document.getElementById('main-battery-current').textContent = '-';
       document.getElementById('main-power-status').textContent = '-';
       document.getElementById('main-speed-mode').textContent = '-';
+      document.getElementById('main-max-speed-level').textContent = '-';
+      document.getElementById('main-speed-level').textContent = '-';
       document.getElementById('main-error-code').textContent = '-';
       document.getElementById('main-angle-counter').textContent = '-';
+      document.getElementById('main-trip-distance').textContent = '-';
       document.getElementById('main-motor-angle-right').textContent = '-';
       document.getElementById('main-motor-angle-left').textContent = '-';
       document.getElementById('main-motor-speed-right').textContent = '-';
       document.getElementById('main-motor-speed-left').textContent = '-';
       document.getElementById('main-joystick-forward').textContent = '-';
       document.getElementById('main-joystick-turn').textContent = '-';
-      document.getElementById('main-joystick-lock').textContent = '-';
+      document.getElementById('main-joystick-pause').textContent = '-';
       document.getElementById('main-device-lock').textContent = '-';
-      document.getElementById('main-max-speed-mode').textContent = '-';
+      document.getElementById('main-auto-power-off').textContent = '-';
 
       // Reset color
       document.getElementById('main-error-code').style.color = '#000';
@@ -1672,7 +1689,8 @@
 
       // System status information
       document.getElementById('main-power-status').textContent = status.power ? 'ON' : 'OFF';
-      // Speed mode display conversion (0→1, 1→2, 2→3, 3→4, others→-)
+      // Speed Level (Effective): speed_mode_indicator is 0-based on the wire, so show it as a level
+      // (0→1, 1→2, 2→3, 3→4, others→-). 5 = driven remotely by SET_VELOCITY, shown as '-'.
       let speedModeDisplay = '-';
       if (status.speedMode === 0) speedModeDisplay = '1';
       else if (status.speedMode === 1) speedModeDisplay = '2';
@@ -1681,6 +1699,9 @@
       document.getElementById('main-speed-mode').textContent = speedModeDisplay;
       document.getElementById('main-error-code').textContent = status.errorCode || 'None';
       document.getElementById('main-angle-counter').textContent = status.angleCounter;
+      // Trip distance (odometer). 1m unit on the wire; displayed in km.
+      document.getElementById('main-trip-distance').textContent =
+        `${(status.tripDistance / 1000).toFixed(2)}km`;
 
       // Motor angle information (0.001rad unit)
       document.getElementById('main-motor-angle-right').textContent = `${(status.motorAngleRight * 0.001).toFixed(3)}rad`;
@@ -1695,12 +1716,19 @@
       const mainJoystickTurnSigned = status.joystickTurn > 127 ? status.joystickTurn - 256 : status.joystickTurn;
       document.getElementById('main-joystick-forward').textContent = mainJoystickForwardSigned;
       document.getElementById('main-joystick-turn').textContent = mainJoystickTurnSigned;
-      // Joystick lock state set by SET_JOYSTICK_LOCK (1: Locked / other: Unlocked)
-      document.getElementById('main-joystick-lock').textContent = status.joystickLock === 1 ? 'Locked' : 'Unlocked';
+      // Joystick pause state set by SET_JOYSTICK_PAUSE (1: Paused / other: Active).
+      // Paused only stops driving; joystick values keep streaming in joy_front/joy_side.
+      document.getElementById('main-joystick-pause').textContent = status.joystickPause === 1 ? 'Paused' : 'Active';
       // Device lock state set by SET_DEVICE_LOCK (1: Locked / other: Unlocked)
       document.getElementById('main-device-lock').textContent = status.deviceLock === 1 ? 'Locked' : 'Unlocked';
-      // Max speed mode set by SET_MAX_SPEED_MODE (display +1 to match System "Speed Mode": 0->1, 1->2, ...)
-      document.getElementById('main-max-speed-mode').textContent = status.maxSpeedMode + 1;
+      // Auto power off state set by SET_AUTO_POWER_OFF (1: Enabled / other: Disabled).
+      // Enabled = WHILL powers itself off after a period of inactivity (default).
+      document.getElementById('main-auto-power-off').textContent = status.autoPowerOff === 1 ? 'Enabled' : 'Disabled';
+      // Max speed level set by SET_MAX_SPEED_LEVEL (already 1-4, no conversion needed)
+      document.getElementById('main-max-speed-level').textContent = status.maxSpeedLevel;
+      // Speed Level (Selected): the level chosen on the HMI (1-4). Not capped by the max speed level,
+      // so it differs from Speed Level (Effective) while the limit is in effect.
+      document.getElementById('main-speed-level').textContent = status.speedLevel;
 
       // Change color according to error code
       const errorElement = document.getElementById('main-error-code');
@@ -1821,10 +1849,10 @@
     });
 
     // Device information automatic retrieval
-    async function getDeviceInfo() {
+    async function getIdentification() {
       if (port && port.writable) {
         try {
-          const versionData = new Uint8Array([0xAF, 0x03, 0x07, 0x00, 0xAB]);  // GetDeviceInfo(0): Service Module FW version
+          const versionData = new Uint8Array([0xAF, 0x03, 0x07, 0x00, 0xAB]);  // GetIdentification(0): Service Module FW version
           const writer = port.writable.getWriter();
           await writer.write(versionData);
           writer.releaseLock();
@@ -1853,7 +1881,7 @@
     let versionResponseTimeout = null;
 
     // Send a Service-Module FW version request.
-    //   useLegacy=false : GetDeviceInfo(0)  AF 03 07 00 AB  (current FW)
+    //   useLegacy=false : GetIdentification(0)  AF 03 07 00 AB  (current FW)
     //   useLegacy=true  : GetFwVersion      AF 02 07 AA     (legacy FW rescue)
     async function sendVersionRequest(useLegacy, label) {
       if (!(port && port.writable)) return;
@@ -1874,8 +1902,8 @@
     }
 
     // Version response waiting process.
-    //  #1 (initial, sent by getDeviceInfo) : GetDeviceInfo(0)
-    //  #2 retry @500ms                     : GetDeviceInfo(0)
+    //  #1 (initial, sent by getIdentification) : GetIdentification(0)
+    //  #2 retry @500ms                     : GetIdentification(0)
     //  #3 retry @1000ms                    : legacy GetFwVersion (rescue for old Service Module FW)
     //  give up @1500ms                     : show "unknown / --.--"
     // Each scheduled step is a no-op once a response has been received (waitingForVersionResponse=false).
@@ -1984,7 +2012,7 @@
     });
 
     // Version response check function. Accepts both response formats:
-    //   current FW (GetDeviceInfo(0)) : AF 09 07 00 [sm_maj][sm_min][hmi_maj][hmi_min][mc_maj][mc_min] [cs]  (11 bytes)
+    //   current FW (GetIdentification(0)) : AF 09 07 00 [sm_maj][sm_min][hmi_maj][hmi_min][mc_maj][mc_min] [cs]  (11 bytes)
     //   legacy  FW (GetFwVersion)     : AF 03 [major] [minor] [cs]                                          (5 bytes)
     function checkVersionResponse(data) {
       // Add data to buffer
@@ -1997,7 +2025,7 @@
         let majorVersion = null;
         let minorVersion = null;
         if (receivedBuffer[1] === 0x09 && receivedBuffer[2] === 0x07 && receivedBuffer.length >= 11) {
-          // GetDeviceInfo(0): AF 09 [cmd 0x07][type 0x00] sm_maj sm_min hmi_maj hmi_min mc_maj mc_min cs
+          // GetIdentification(0): AF 09 [cmd 0x07][type 0x00] sm_maj sm_min hmi_maj hmi_min mc_maj mc_min cs
           majorVersion = receivedBuffer[4];  // SM major
           minorVersion = receivedBuffer[5];  // SM minor
         } else if (receivedBuffer[1] === 0x03 && receivedBuffer.length >= 5) {
@@ -2047,8 +2075,8 @@
 
     /* ===== Device Capability panel (API version / available commands / available data) ===== */
     // Public command set (advertised in the capability map). Fixed per SM Serial API version.
-    // Non-public (not listed): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
-    // 9 SET_JOYSTICK_DIRECTION.
+    // Non-public (not listed): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_IDENTIFICATION /
+    // ID 17 is permanently reserved and never re-assigned.
     const CAP_COMMANDS = [
       { id: 0,  name: 'START_SENDING_DATA' },
       { id: 1,  name: 'STOP_SENDING_DATA' },
@@ -2056,20 +2084,24 @@
       { id: 3,  name: 'SET_JOYSTICK' },
       { id: 4,  name: 'SET_SPEED_PROFILE' },
       { id: 8,  name: 'SET_VELOCITY' },
-      { id: 10, name: 'SET_JOYSTICK_LOCK' },
-      { id: 11, name: 'SET_MAX_SPEED_MODE' },
+      { id: 9,  name: 'SET_DEVICE_LOCK' },
+      { id: 10, name: 'SET_JOYSTICK_PAUSE' },
+      { id: 11, name: 'SET_MAX_SPEED_LEVEL' },
       { id: 12, name: 'SET_SPEED_LEVEL' },
       { id: 13, name: 'SOUND_HORN' },
-      { id: 14, name: 'SET_DEVICE_LOCK' },
-      { id: 15, name: 'GET_DEVICE_LOCK' },
+      { id: 14, name: 'SET_AUTO_POWER_OFF' },
+      { id: 15, name: 'GET_SETTINGS' },
       { id: 16, name: 'GET_CAPABILITY' },
     ];
     // Public Dataset1 offsets. Non-public (not listed): 0 low_battery_level / 1 sounds_buzzer /
-    // 4 joystick_direction.
+    // 7 reserved.
     const CAP_DATA_FIELDS = [
-      { offset: 2,  name: 'Joystick Lock' },
-      { offset: 3,  name: 'Max Speed Mode' },
-      { offset: 5,  name: 'Device Lock' },
+      { offset: 2,  name: 'Device Lock' },
+      { offset: 3,  name: 'Joystick Pause' },
+      { offset: 4,  name: 'Max Speed Level' },
+      { offset: 5,  name: 'Speed Level (Selected)' },
+      { offset: 6,  name: 'Auto Power Off' },
+      { offset: 8,  name: 'Trip Distance' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -2079,7 +2111,7 @@
       { offset: 21, name: 'Right Motor Speed' },
       { offset: 23, name: 'Left Motor Speed' },
       { offset: 25, name: 'Power' },
-      { offset: 26, name: 'Speed Mode' },
+      { offset: 26, name: 'Speed Level (Effective)' },
       { offset: 27, name: 'Error' },
       { offset: 28, name: 'Angle Counter' },
     ];
@@ -2175,7 +2207,7 @@
       }, 200);
     }
 
-    // Frame scanner for the one-shot capability response (AF 0C 10 ..).
+    // Frame scanner for the one-shot capability response (AF 10 10 ..).
     // Uses its own buffer so it does not interfere with the other check*Response parsers.
     function checkCapabilityResponse(data) {
       const merged = new Uint8Array(capabilityBuffer.length + data.length);
@@ -2196,13 +2228,16 @@
         for (let k = i; k < i + total - 1; k++) checksum ^= capabilityBuffer[k];
         if (checksum !== capabilityBuffer[i + total - 1]) { i++; continue; } // bad frame, resync
 
-        if (len === 0x0C && capabilityBuffer[i + 2] === 0x10 && capabilityExpecting) {
-          // Combined capability response: AF 0C [cmd 0x10] [api_major] [api_minor] [cmd_map 0..3] [data_map 0..3] [cs]
+        // Command map length: 8 bytes (len 0x10). len 0x0C is the 4-byte command map of older
+        // Service Module firmware and is still accepted. The data map is 4 bytes in both cases.
+        const cmdMapLen = (len === 0x10) ? 8 : ((len === 0x0C) ? 4 : 0);
+        if (cmdMapLen > 0 && capabilityBuffer[i + 2] === 0x10 && capabilityExpecting) {
+          // Combined capability response: AF 10 [cmd 0x10] [api_major] [api_minor] [cmd_map 0..7] [data_map 0..3] [cs]
           capabilityReceived = true;
           const apiMajor = capabilityBuffer[i + 3];
           const apiMinor = capabilityBuffer[i + 4];
-          capCommandMap  = capabilityBuffer.slice(i + 5, i + 9);
-          capDataMap     = capabilityBuffer.slice(i + 9, i + 13);
+          capCommandMap  = capabilityBuffer.slice(i + 5, i + 5 + cmdMapLen);
+          capDataMap     = capabilityBuffer.slice(i + 5 + cmdMapLen, i + 9 + cmdMapLen);
           const apiEl = document.getElementById('cap-api-version');
           if (apiEl) apiEl.textContent = `${apiMajor}.${apiMinor.toString().padStart(2, '0')}`;
           const noteEl = document.getElementById('cap-api-note');
@@ -2237,7 +2272,7 @@
               checkSpeedProfileResponse(value);
               checkMotorStatusResponse(value);
               checkCapabilityResponse(value);
-              checkDeviceLockResponse(value);
+              checkSettingsResponse(value);
             }
           }
         } catch (error) {
@@ -2270,15 +2305,15 @@
         sendSetBatterySavingButton.disabled = false;
         sendSetVelocityButton.disabled = false;
         sendSetVelocityContinuousButton.disabled = false;
-        sendSetJoystickDirectionButton.disabled = false;
-        sendSetJoystickLockButton.disabled = false;
-        sendSetMaxSpeedModeButton.disabled = false;
+        sendSetJoystickPauseButton.disabled = false;
+        sendSetMaxSpeedLevelButton.disabled = false;
         sendSetDeviceLockButton.disabled = false;
         sendSoundHornButton.disabled = false;
         sendSetSpeedLevelButton.disabled = false;
-        sendGetDeviceLockButton.disabled = false;
-        sendGetDeviceInfoButton.disabled = false;
+        sendGetSettingsButton.disabled = false;
+        sendGetIdentificationButton.disabled = false;
         sendGetCapabilityButton.disabled = false;
+        sendSetAutoPowerOffButton.disabled = false;
         sendRawCommandButton.disabled = false;
 
         // Enable buttons for basic function tab as well
@@ -2328,15 +2363,15 @@
         sendSetVelocityButton.disabled = true;
         sendSetVelocityContinuousButton.disabled = true;
         stopVelocityContinuousSending();
-        sendSetJoystickDirectionButton.disabled = true;
-        sendSetJoystickLockButton.disabled = true;
-        sendSetMaxSpeedModeButton.disabled = true;
+        sendSetJoystickPauseButton.disabled = true;
+        sendSetMaxSpeedLevelButton.disabled = true;
         sendSetDeviceLockButton.disabled = true;
         sendSoundHornButton.disabled = true;
         sendSetSpeedLevelButton.disabled = true;
-        sendGetDeviceLockButton.disabled = true;
-        sendGetDeviceInfoButton.disabled = true;
+        sendGetSettingsButton.disabled = true;
+        sendGetIdentificationButton.disabled = true;
         sendGetCapabilityButton.disabled = true;
+        sendSetAutoPowerOffButton.disabled = true;
         sendRawCommandButton.disabled = true;
 
         // Reset device information
@@ -2406,15 +2441,15 @@
         sendSetBatterySavingButton.disabled = true;
         sendSetVelocityButton.disabled = true;
         sendSetVelocityContinuousButton.disabled = true;
-        sendSetJoystickDirectionButton.disabled = true;
-        sendSetJoystickLockButton.disabled = true;
-        sendSetMaxSpeedModeButton.disabled = true;
+        sendSetJoystickPauseButton.disabled = true;
+        sendSetMaxSpeedLevelButton.disabled = true;
         sendSetDeviceLockButton.disabled = true;
         sendSoundHornButton.disabled = true;
         sendSetSpeedLevelButton.disabled = true;
-        sendGetDeviceLockButton.disabled = true;
-        sendGetDeviceInfoButton.disabled = true;
+        sendGetSettingsButton.disabled = true;
+        sendGetIdentificationButton.disabled = true;
         sendGetCapabilityButton.disabled = true;
+        sendSetAutoPowerOffButton.disabled = true;
         sendRawCommandButton.disabled = true;
 
         // Disable buttons for basic function tab as well
@@ -2635,7 +2670,7 @@
     deviceInfoDisplay.addEventListener('click', async () => {
       if (port && port.writable) {
         try {
-          await getDeviceInfo();
+          await getIdentification();
         } catch (error) {
           console.error('Manual Device Information Retrieval Error:', error);
         }
@@ -2890,11 +2925,17 @@
             const dataStart = processedBytes + 3;
             const battery = motorStatusBuffer[dataStart];           // Battery saving level（4th Byte: 0x13）
             const buzzer = motorStatusBuffer[dataStart + 1];        // Buzzer setting（5th Byte: 0x01）
-            const joystickLock = motorStatusBuffer[dataStart + 2];       // Joystick lock state 1:Lock / 0:Unlock set by SET_JOYSTICK_LOCK (6th Byte)
-            const maxSpeedMode = motorStatusBuffer[dataStart + 3];       // Max speed mode set by SET_MAX_SPEED_MODE (7th Byte)
-            const joystickDirection = motorStatusBuffer[dataStart + 4];  // Joystick direction angle set by SET_JOYSTICK_DIRECTION (8th Byte)
-            const deviceLock = motorStatusBuffer[dataStart + 5];         // Device lock state 1:Lock / 0:Unlock set by SET_DEVICE_LOCK (9th Byte)
-            // Ignore 10-15th bytes (reserved)
+            const deviceLock = motorStatusBuffer[dataStart + 2];         // offset2: Device lock state 1:Lock / 0:Unlock set by SET_DEVICE_LOCK
+            const joystickPause = motorStatusBuffer[dataStart + 3];      // offset3: Joystick pause state 1:Pause / 0:Resume set by SET_JOYSTICK_PAUSE
+            const maxSpeedLevel = motorStatusBuffer[dataStart + 4];      // offset4: Max speed level 1-4 set by SET_MAX_SPEED_LEVEL
+            const speedLevel = motorStatusBuffer[dataStart + 5];         // offset5: Speed level 1-4 selected on the HMI, not capped by the max
+            const autoPowerOff = motorStatusBuffer[dataStart + 6];       // offset6: Auto power off state 1:Enabled / 0:Disabled set by SET_AUTO_POWER_OFF
+            // offset7 is reserved (formerly joystick orientation).
+            // Trip distance (odometer) in 1m unit, MSB first (12-15th bytes)
+            const tripDistance = ((motorStatusBuffer[dataStart + 8] << 24) |
+                                  (motorStatusBuffer[dataStart + 9] << 16) |
+                                  (motorStatusBuffer[dataStart + 10] << 8) |
+                                   motorStatusBuffer[dataStart + 11]) >>> 0;
             const joystickForward = motorStatusBuffer[dataStart + 12];  // Joystick (Forward/Backward Direction) (16th Byte: 0x56)
             const joystickTurn = motorStatusBuffer[dataStart + 13];     // Joystick (Left/Right Turn Direction) (17th Byte: 0x00)
             const batteryLevel = motorStatusBuffer[dataStart + 14];     // Battery level (18th Byte: 0x05)
@@ -2911,16 +2952,16 @@
 
             // Debug: Output received data to console
             console.log('Motor status data received:', {
-              battery, buzzer, joystickDirection, joystickLock, deviceLock, maxSpeedMode,
-              joystickForward, joystickTurn, batteryLevel,
+              battery, buzzer, deviceLock, joystickPause, maxSpeedLevel, speedLevel, autoPowerOff,
+              tripDistance, joystickForward, joystickTurn, batteryLevel,
               batteryCurrent, motorAngleRight, motorAngleLeft, motorSpeedRight, motorSpeedLeft,
               power, speedMode, errorCode, angleCounter
             });
 
             // Update UI
             updateMotorStatusDisplay({
-              battery, buzzer, joystickDirection, joystickLock, deviceLock, maxSpeedMode,
-              joystickForward, joystickTurn, batteryLevel,
+              battery, buzzer, deviceLock, joystickPause, maxSpeedLevel, speedLevel, autoPowerOff,
+              tripDistance, joystickForward, joystickTurn, batteryLevel,
               batteryCurrent, motorAngleRight, motorAngleLeft, motorSpeedRight, motorSpeedLeft,
               power, speedMode, errorCode, angleCounter
             });
@@ -3317,63 +3358,34 @@
     forwardBackwardVelocityInput.addEventListener('input', updateSetVelocityPreview);
     leftRightVelocityInput.addEventListener('input', updateSetVelocityPreview);
 
-    // SET_JOYSTICK_DIRECTION command real-time preview update function
-    function updateSetJoystickDirectionPreview() {
-      const angle = parseInt(joystickDirectionInput.value) || 0;
+    // SET_JOYSTICK_PAUSE command real-time preview update function
+    function updateSetJoystickPausePreview() {
+      const pause = parseInt(joystickPauseInput.value) || 0;
 
       // Input value validation
-      if (angle < -128 || angle > 127) {
-        setJoystickDirectionHexDisplay.textContent = 'Joystick Direction is invalid (-128-127)';
-        setJoystickDirectionHexDisplay.style.color = '#E94816';
+      if (pause < 0 || pause > 255) {
+        setJoystickPauseHexDisplay.textContent = 'Pause/Resume value is invalid (0-255)';
+        setJoystickPauseHexDisplay.style.color = '#E94816';
         return;
       }
 
-      // Build SET_JOYSTICK_DIRECTION command
-      // Format: 0xAF, 0x03, 0x09, [Joystick Direction], [Checksum]
-      const header = [0xAF, 0x03, 0x09, angle & 0xFF];
-      let checksum = 0;
-      header.forEach(byte => {
-        checksum ^= byte;
-      });
-
-      const setJoystickDirectionCommand = [...header, checksum];
-      const hexData = setJoystickDirectionCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-
-      setJoystickDirectionHexDisplay.textContent = hexData;
-      setJoystickDirectionHexDisplay.style.color = '#000000';
-    }
-
-    // Real-time preview update on SET_JOYSTICK_DIRECTION input value change
-    joystickDirectionInput.addEventListener('input', updateSetJoystickDirectionPreview);
-
-    // SET_JOYSTICK_LOCK command real-time preview update function
-    function updateSetJoystickLockPreview() {
-      const disable = parseInt(joystickLockInput.value) || 0;
-
-      // Input value validation
-      if (disable < 0 || disable > 255) {
-        setJoystickLockHexDisplay.textContent = 'Lock/Unlock value is invalid (0-255)';
-        setJoystickLockHexDisplay.style.color = '#E94816';
-        return;
-      }
-
-      // Build SET_JOYSTICK_LOCK command
+      // Build SET_JOYSTICK_PAUSE command
       // Format: 0xAF, 0x03, 0x0A, [Lock:1 / Unlock:0], [Checksum]
-      const header = [0xAF, 0x03, 0x0A, disable];
+      const header = [0xAF, 0x03, 0x0A, pause];
       let checksum = 0;
       header.forEach(byte => {
         checksum ^= byte;
       });
 
-      const setJoystickLockCommand = [...header, checksum];
-      const hexData = setJoystickLockCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+      const setJoystickPauseCommand = [...header, checksum];
+      const hexData = setJoystickPauseCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
 
-      setJoystickLockHexDisplay.textContent = hexData;
-      setJoystickLockHexDisplay.style.color = '#000000';
+      setJoystickPauseHexDisplay.textContent = hexData;
+      setJoystickPauseHexDisplay.style.color = '#000000';
     }
 
-    // Real-time preview update on SET_JOYSTICK_LOCK input value change
-    joystickLockInput.addEventListener('input', updateSetJoystickLockPreview);
+    // Real-time preview update on SET_JOYSTICK_PAUSE input value change
+    joystickPauseInput.addEventListener('input', updateSetJoystickPausePreview);
 
     // SET_DEVICE_LOCK command real-time preview update function
     function updateSetDeviceLockPreview() {
@@ -3387,8 +3399,8 @@
       }
 
       // Build SET_DEVICE_LOCK command
-      // Format: 0xAF, 0x03, 0x0E, [Lock:1 / Unlock:0], [Checksum]
-      const header = [0xAF, 0x03, 0x0E, lock];
+      // Format: 0xAF, 0x03, 0x09, [Lock:1 / Unlock:0], [Checksum]
+      const header = [0xAF, 0x03, 0x09, lock];
       let checksum = 0;
       header.forEach(byte => {
         checksum ^= byte;
@@ -3403,6 +3415,35 @@
 
     // Real-time preview update on SET_DEVICE_LOCK input value change
     deviceLockInput.addEventListener('input', updateSetDeviceLockPreview);
+
+    // SET_AUTO_POWER_OFF command real-time preview update function
+    function updateSetAutoPowerOffPreview() {
+      const enable = parseInt(autoPowerOffInput.value) || 0;
+
+      // Input value validation
+      if (enable < 0 || enable > 255) {
+        setAutoPowerOffHexDisplay.textContent = 'Enable/Disable value is invalid (0-255)';
+        setAutoPowerOffHexDisplay.style.color = '#E94816';
+        return;
+      }
+
+      // Build SET_AUTO_POWER_OFF command
+      // Format: 0xAF, 0x03, 0x0E, [Enable:1 / Disable:0], [Checksum]
+      const header = [0xAF, 0x03, 0x0E, enable];
+      let checksum = 0;
+      header.forEach(byte => {
+        checksum ^= byte;
+      });
+
+      const setAutoPowerOffCommand = [...header, checksum];
+      const hexData = setAutoPowerOffCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+
+      setAutoPowerOffHexDisplay.textContent = hexData;
+      setAutoPowerOffHexDisplay.style.color = '#000000';
+    }
+
+    // Real-time preview update on SET_AUTO_POWER_OFF input value change
+    autoPowerOffInput.addEventListener('input', updateSetAutoPowerOffPreview);
 
     // SOUND_HORN command real-time preview update function
     function updateSoundHornPreview() {
@@ -3462,63 +3503,63 @@
     // Real-time preview update on SET_SPEED_LEVEL input value change
     speedLevelInput.addEventListener('input', updateSetSpeedLevelPreview);
 
-    // SET_MAX_SPEED_MODE command real-time preview update function
-    function updateSetMaxSpeedModePreview() {
-      const maxSpeedMode = parseInt(maxSpeedModeInput.value) || 0;
+    // SET_MAX_SPEED_LEVEL command real-time preview update function
+    function updateSetMaxSpeedLevelPreview() {
+      const maxSpeedLevel = parseInt(maxSpeedLevelInput.value) || 0;
 
       // Input value validation
-      if (maxSpeedMode < 0 || maxSpeedMode > 255) {
-        setMaxSpeedModeHexDisplay.textContent = 'Max Speed Mode is invalid (0-255)';
-        setMaxSpeedModeHexDisplay.style.color = '#E94816';
+      if (maxSpeedLevel < 0 || maxSpeedLevel > 255) {
+        setMaxSpeedLevelHexDisplay.textContent = 'Max Speed Level is invalid (0-255)';
+        setMaxSpeedLevelHexDisplay.style.color = '#E94816';
         return;
       }
 
-      // Build SET_MAX_SPEED_MODE command
-      // Format: 0xAF, 0x03, 0x0B, [Max Speed Mode], [Checksum]
-      const header = [0xAF, 0x03, 0x0B, maxSpeedMode];
+      // Build SET_MAX_SPEED_LEVEL command
+      // Format: 0xAF, 0x03, 0x0B, [Max Speed Level], [Checksum]
+      const header = [0xAF, 0x03, 0x0B, maxSpeedLevel];
       let checksum = 0;
       header.forEach(byte => {
         checksum ^= byte;
       });
 
-      const setMaxSpeedModeCommand = [...header, checksum];
-      const hexData = setMaxSpeedModeCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+      const setMaxSpeedLevelCommand = [...header, checksum];
+      const hexData = setMaxSpeedLevelCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
 
-      setMaxSpeedModeHexDisplay.textContent = hexData;
-      setMaxSpeedModeHexDisplay.style.color = '#000000';
+      setMaxSpeedLevelHexDisplay.textContent = hexData;
+      setMaxSpeedLevelHexDisplay.style.color = '#000000';
     }
 
-    // Real-time preview update on SET_MAX_SPEED_MODE input value change
-    maxSpeedModeInput.addEventListener('input', updateSetMaxSpeedModePreview);
+    // Real-time preview update on SET_MAX_SPEED_LEVEL input value change
+    maxSpeedLevelInput.addEventListener('input', updateSetMaxSpeedLevelPreview);
 
-    // GET_DEVICE_INFO command real-time preview update function
-    function updateGetDeviceInfoPreview() {
-      const deviceInfoType = parseInt(getDeviceInfoInput.value) || 0;
+    // GET_IDENTIFICATION command real-time preview update function
+    function updateGetIdentificationPreview() {
+      const identificationType = parseInt(getIdentificationInput.value) || 0;
 
       // Input value validation
-      if (deviceInfoType < 0 || deviceInfoType > 255) {
-        getDeviceInfoHexDisplay.textContent = 'Device Info Type is invalid (0-255)';
-        getDeviceInfoHexDisplay.style.color = '#E94816';
+      if (identificationType < 0 || identificationType > 255) {
+        getIdentificationHexDisplay.textContent = 'Identification Type is invalid (0-255)';
+        getIdentificationHexDisplay.style.color = '#E94816';
         return;
       }
 
-      // Build GET_DEVICE_INFO command
-      // Format: 0xAF, 0x03, 0x07, [Device Info Type], [Checksum]
-      const header = [0xAF, 0x03, 0x07, deviceInfoType];
+      // Build GET_IDENTIFICATION command
+      // Format: 0xAF, 0x03, 0x07, [Identification Type], [Checksum]
+      const header = [0xAF, 0x03, 0x07, identificationType];
       let checksum = 0;
       header.forEach(byte => {
         checksum ^= byte;
       });
 
-      const getDeviceInfoCommand = [...header, checksum];
-      const hexData = getDeviceInfoCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+      const getIdentificationCommand = [...header, checksum];
+      const hexData = getIdentificationCommand.map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
 
-      getDeviceInfoHexDisplay.textContent = hexData;
-      getDeviceInfoHexDisplay.style.color = '#000000';
+      getIdentificationHexDisplay.textContent = hexData;
+      getIdentificationHexDisplay.style.color = '#000000';
     }
 
-    // Real-time preview update on GET_DEVICE_INFO input value change
-    getDeviceInfoInput.addEventListener('input', updateGetDeviceInfoPreview);
+    // Real-time preview update on GET_IDENTIFICATION input value change
+    getIdentificationInput.addEventListener('input', updateGetIdentificationPreview);
 
     // GET_CAPABILITY has no parameter, so its preview is fixed (kept as the HTML default).
 
@@ -4034,76 +4075,40 @@
       stopVelocityContinuousSending();
     });
 
-    // SET_JOYSTICK_DIRECTIONCommandSend
-    sendSetJoystickDirectionButton.addEventListener('click', async () => {
+
+    // SET_JOYSTICK_PAUSECommandSend
+    sendSetJoystickPauseButton.addEventListener('click', async () => {
       if (port && port.writable) {
         try {
-          const angle = parseInt(joystickDirectionInput.value) || 0;
+          const pause = parseInt(joystickPauseInput.value) || 0;
 
           // Input value validation
-          if (angle < -128 || angle > 127) {
-            alert('Please enter Joystick Direction between -128 and 127.');
-            return;
-          }
-
-          // Build SET_JOYSTICK_DIRECTION command
-          // Format: 0xAF, 0x03, 0x09, [Joystick Direction], [Checksum]
-          const header = [0xAF, 0x03, 0x09, angle & 0xFF];
-          let checksum = 0;
-          header.forEach(byte => {
-            checksum ^= byte;
-          });
-
-          const setJoystickDirectionCommand = new Uint8Array([...header, checksum]);
-
-          const writer = port.writable.getWriter();
-          await writer.write(setJoystickDirectionCommand);
-          writer.releaseLock();
-
-          const timestamp = getJapanTimeString();
-          const hexData = Array.from(setJoystickDirectionCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-          const message = `[${timestamp}] Send SET_JOYSTICK_DIRECTION: ${hexData}\n`;
-          appendLog(message);
-
-        } catch (error) {
-          console.error('SET_JOYSTICK_DIRECTION Send Error:', error);
-        }
-      }
-    });
-
-    // SET_JOYSTICK_LOCKCommandSend
-    sendSetJoystickLockButton.addEventListener('click', async () => {
-      if (port && port.writable) {
-        try {
-          const disable = parseInt(joystickLockInput.value) || 0;
-
-          // Input value validation
-          if (disable < 0 || disable > 255) {
+          if (pause < 0 || pause > 255) {
             alert('Please enter a value between 0 and 255.');
             return;
           }
 
-          // Build SET_JOYSTICK_LOCK command
-          // Format: 0xAF, 0x03, 0x0A, [Lock:1 / Unlock:0], [Checksum]
-          const header = [0xAF, 0x03, 0x0A, disable];
+          // Build SET_JOYSTICK_PAUSE command
+          // Format: 0xAF, 0x03, 0x0A, [Pause:1 / Resume:0], [Checksum]
+          const header = [0xAF, 0x03, 0x0A, pause];
           let checksum = 0;
           header.forEach(byte => {
             checksum ^= byte;
           });
 
-          const setJoystickLockCommand = new Uint8Array([...header, checksum]);
+          const setJoystickPauseCommand = new Uint8Array([...header, checksum]);
 
           const writer = port.writable.getWriter();
-          await writer.write(setJoystickLockCommand);
+          await writer.write(setJoystickPauseCommand);
           writer.releaseLock();
 
           const timestamp = getJapanTimeString();
-          const hexData = Array.from(setJoystickLockCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-          const message = `[${timestamp}] Send SET_JOYSTICK_LOCK: ${hexData}\n`;
+          const hexData = Array.from(setJoystickPauseCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SET_JOYSTICK_PAUSE: ${hexData}\n`;
           appendLog(message);
 
         } catch (error) {
-          console.error('SET_JOYSTICK_LOCK Send Error:', error);
+          console.error('SET_JOYSTICK_PAUSE Send Error:', error);
         }
       }
     });
@@ -4121,8 +4126,8 @@
           }
 
           // Build SET_DEVICE_LOCK command
-          // Format: 0xAF, 0x03, 0x0E, [Lock:1 / Unlock:0], [Checksum]
-          const header = [0xAF, 0x03, 0x0E, lock];
+          // Format: 0xAF, 0x03, 0x09, [Lock:1 / Unlock:0], [Checksum]
+          const header = [0xAF, 0x03, 0x09, lock];
           let checksum = 0;
           header.forEach(byte => {
             checksum ^= byte;
@@ -4141,6 +4146,43 @@
 
         } catch (error) {
           console.error('SET_DEVICE_LOCK Send Error:', error);
+        }
+      }
+    });
+
+    // SET_AUTO_POWER_OFFCommandSend
+    sendSetAutoPowerOffButton.addEventListener('click', async () => {
+      if (port && port.writable) {
+        try {
+          const enable = parseInt(autoPowerOffInput.value) || 0;
+
+          // Input value validation
+          if (enable < 0 || enable > 255) {
+            alert('Please enter a value between 0 and 255.');
+            return;
+          }
+
+          // Build SET_AUTO_POWER_OFF command
+          // Format: 0xAF, 0x03, 0x0E, [Enable:1 / Disable:0], [Checksum]
+          const header = [0xAF, 0x03, 0x0E, enable];
+          let checksum = 0;
+          header.forEach(byte => {
+            checksum ^= byte;
+          });
+
+          const setAutoPowerOffCommand = new Uint8Array([...header, checksum]);
+
+          const writer = port.writable.getWriter();
+          await writer.write(setAutoPowerOffCommand);
+          writer.releaseLock();
+
+          const timestamp = getJapanTimeString();
+          const hexData = Array.from(setAutoPowerOffCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SET_AUTO_POWER_OFF: ${hexData}\n`;
+          appendLog(message);
+
+        } catch (error) {
+          console.error('SET_AUTO_POWER_OFF Send Error:', error);
         }
       }
     });
@@ -4219,131 +4261,141 @@
       }
     });
 
-    // GET_DEVICE_LOCKCommandSend (parameterless request; reply is AF 02 [lock] cs)
-    let deviceLockExpecting = false;
-    let deviceLockBuffer = new Uint8Array(0);
-    sendGetDeviceLockButton.addEventListener('click', async () => {
+    // GET_SETTINGSCommandSend (parameterless request; reply is AF 08 0F [6 settings] cs)
+    let settingsExpecting = false;
+    let settingsBuffer = new Uint8Array(0);
+    sendGetSettingsButton.addEventListener('click', async () => {
       if (port && port.writable) {
         try {
-          const getDeviceLockCommand = new Uint8Array([0xAF, 0x02, 0x0F, 0xA2]);
-          deviceLockExpecting = true;
-          deviceLockBuffer = new Uint8Array(0);
+          const getSettingsCommand = new Uint8Array([0xAF, 0x02, 0x0F, 0xA2]);
+          settingsExpecting = true;
+          settingsBuffer = new Uint8Array(0);
 
           const writer = port.writable.getWriter();
-          await writer.write(getDeviceLockCommand);
+          await writer.write(getSettingsCommand);
           writer.releaseLock();
 
           const timestamp = getJapanTimeString();
-          const hexData = Array.from(getDeviceLockCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-          appendLog(`[${timestamp}] Send GET_DEVICE_LOCK: ${hexData}\n`);
+          const hexData = Array.from(getSettingsCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          appendLog(`[${timestamp}] Send GET_SETTINGS: ${hexData}
+`);
         } catch (error) {
-          console.error('GET_DEVICE_LOCK Send Error:', error);
+          console.error('GET_SETTINGS Send Error:', error);
         }
       }
     });
 
-    // Frame scanner for the GET_DEVICE_LOCK response: AF 03 [cmd 0x0F] [lock] cs
+    // Frame scanner for the GET_SETTINGS response:
+    //   AF [len] [cmd 0x0F] [device_lock][joystick_pause][max_speed_level][speed_level][auto_power_off][power_on] cs
     // Self-identifying by the command id (0x0F), so no ambiguity with the power-on response.
-    function checkDeviceLockResponse(data) {
-      if (!deviceLockExpecting) return;
-      const merged = new Uint8Array(deviceLockBuffer.length + data.length);
-      merged.set(deviceLockBuffer);
-      merged.set(data, deviceLockBuffer.length);
-      deviceLockBuffer = merged;
+    // フィールド数はデータ長から導出する(将来の末尾追加に備え、長さをハードコードしない)。
+    function checkSettingsResponse(data) {
+      if (!settingsExpecting) return;
+      const merged = new Uint8Array(settingsBuffer.length + data.length);
+      merged.set(settingsBuffer);
+      merged.set(data, settingsBuffer.length);
+      settingsBuffer = merged;
 
       let i = 0;
-      while (i + 5 <= deviceLockBuffer.length) {
-        if (deviceLockBuffer[i] !== 0xAF) { i++; continue; }
-        const len = deviceLockBuffer[i + 1];
-        const cmd = deviceLockBuffer[i + 2];
-        const lock = deviceLockBuffer[i + 3];
-        const cs = deviceLockBuffer[i + 4];
-        if (len === 0x03 && cmd === 0x0F &&
-            cs === ((0xAF ^ 0x03 ^ 0x0F ^ lock) & 0xFF)) {
-          const timestamp = getJapanTimeString();
-          appendLog(`[${timestamp}] Device Lock Response: ${lock === 1 ? 'Locked (1)' : 'Unlocked (0)'}\n`);
-          deviceLockExpecting = false;
-          deviceLockBuffer = new Uint8Array(0);
-          return;
-        }
-        i++;
+      while (i + 3 <= settingsBuffer.length) {
+        if (settingsBuffer[i] !== 0xAF) { i++; continue; }
+        const len = settingsBuffer[i + 1];
+        const total = len + 2;                       // sign + len + (payload + cs)
+        if (settingsBuffer.length - i < total) break;  // フレーム未達。次チャンクを待つ。
+        const cmd = settingsBuffer[i + 2];
+        if (cmd !== 0x0F || len < 3) { i++; continue; }
+
+        let cs = 0;
+        for (let k = 0; k < total - 1; k++) cs ^= settingsBuffer[i + k];
+        if (cs !== settingsBuffer[i + total - 1]) { i++; continue; }
+
+        const f = settingsBuffer.slice(i + 3, i + total - 1);   // 設定フィールド列
+        const names = ['Device Lock', 'Joystick Pause', 'Max Speed Level',
+                       'Speed Level', 'Auto Power Off', 'Power On'];
+        const parts = Array.from(f).map((v, n) => `${names[n] ?? `Field${n}`}=${v}`);
+        const timestamp = getJapanTimeString();
+        appendLog(`[${timestamp}] Settings Response: ${parts.join(' / ')}
+`);
+        settingsExpecting = false;
+        settingsBuffer = new Uint8Array(0);
+        return;
       }
-      // 直近4バイトは次チャンクとの結合のため残す。
-      if (deviceLockBuffer.length > 4) {
-        deviceLockBuffer = deviceLockBuffer.slice(deviceLockBuffer.length - 4);
+      // 直近の未確定分だけ残す。
+      if (settingsBuffer.length > 16) {
+        settingsBuffer = settingsBuffer.slice(settingsBuffer.length - 16);
       }
     }
 
-    // SET_MAX_SPEED_MODECommandSend
-    sendSetMaxSpeedModeButton.addEventListener('click', async () => {
+    // SET_MAX_SPEED_LEVELCommandSend
+    sendSetMaxSpeedLevelButton.addEventListener('click', async () => {
       if (port && port.writable) {
         try {
-          const maxSpeedMode = parseInt(maxSpeedModeInput.value) || 0;
+          const maxSpeedLevel = parseInt(maxSpeedLevelInput.value) || 0;
 
           // Input value validation
-          if (maxSpeedMode < 0 || maxSpeedMode > 255) {
-            alert('Please enter Max Speed Mode between 0 and 255.');
+          if (maxSpeedLevel < 0 || maxSpeedLevel > 255) {
+            alert('Please enter Max Speed Level between 0 and 255.');
             return;
           }
 
-          // Build SET_MAX_SPEED_MODE command
-          // Format: 0xAF, 0x03, 0x0B, [Max Speed Mode], [Checksum]
-          const header = [0xAF, 0x03, 0x0B, maxSpeedMode];
+          // Build SET_MAX_SPEED_LEVEL command
+          // Format: 0xAF, 0x03, 0x0B, [Max Speed Level], [Checksum]
+          const header = [0xAF, 0x03, 0x0B, maxSpeedLevel];
           let checksum = 0;
           header.forEach(byte => {
             checksum ^= byte;
           });
 
-          const setMaxSpeedModeCommand = new Uint8Array([...header, checksum]);
+          const setMaxSpeedLevelCommand = new Uint8Array([...header, checksum]);
 
           const writer = port.writable.getWriter();
-          await writer.write(setMaxSpeedModeCommand);
+          await writer.write(setMaxSpeedLevelCommand);
           writer.releaseLock();
 
           const timestamp = getJapanTimeString();
-          const hexData = Array.from(setMaxSpeedModeCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-          const message = `[${timestamp}] Send SET_MAX_SPEED_MODE: ${hexData}\n`;
+          const hexData = Array.from(setMaxSpeedLevelCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const message = `[${timestamp}] Send SET_MAX_SPEED_LEVEL: ${hexData}\n`;
           appendLog(message);
 
         } catch (error) {
-          console.error('SET_MAX_SPEED_MODE Send Error:', error);
+          console.error('SET_MAX_SPEED_LEVEL Send Error:', error);
         }
       }
     });
 
-    // GET_DEVICE_INFOCommandSend
-    sendGetDeviceInfoButton.addEventListener('click', async () => {
+    // GET_IDENTIFICATIONCommandSend
+    sendGetIdentificationButton.addEventListener('click', async () => {
       if (port && port.writable) {
         try {
-          const deviceInfoType = parseInt(getDeviceInfoInput.value) || 0;
+          const identificationType = parseInt(getIdentificationInput.value) || 0;
 
           // Input value validation
-          if (deviceInfoType < 0 || deviceInfoType > 255) {
-            alert('Please enter Device Info Type between 0 and 255.');
+          if (identificationType < 0 || identificationType > 255) {
+            alert('Please enter Identification Type between 0 and 255.');
             return;
           }
 
-          // Build GET_DEVICE_INFO command
-          // Format: 0xAF, 0x03, 0x07, [Device Info Type], [Checksum]
-          const header = [0xAF, 0x03, 0x07, deviceInfoType];
+          // Build GET_IDENTIFICATION command
+          // Format: 0xAF, 0x03, 0x07, [Identification Type], [Checksum]
+          const header = [0xAF, 0x03, 0x07, identificationType];
           let checksum = 0;
           header.forEach(byte => {
             checksum ^= byte;
           });
 
-          const getDeviceInfoCommand = new Uint8Array([...header, checksum]);
+          const getIdentificationCommand = new Uint8Array([...header, checksum]);
 
           const writer = port.writable.getWriter();
-          await writer.write(getDeviceInfoCommand);
+          await writer.write(getIdentificationCommand);
           writer.releaseLock();
 
           const timestamp = getJapanTimeString();
-          const hexData = Array.from(getDeviceInfoCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+          const hexData = Array.from(getIdentificationCommand).map(byte => '0x' + byte.toString(16).toUpperCase().padStart(2, '0')).join(' ');
           const message = `[${timestamp}] Send RESERVED_7: ${hexData}\n`;
           appendLog(message);
 
         } catch (error) {
-          console.error('GET_DEVICE_INFO Send Error:', error);
+          console.error('GET_IDENTIFICATION Send Error:', error);
         }
       }
     });
@@ -4443,13 +4495,13 @@
     updateSetSpeedProfilePreview();
     updateSetBatterySavingPreview();
     updateSetVelocityPreview();
-    updateSetJoystickDirectionPreview();
-    updateSetJoystickLockPreview();
+    updateSetJoystickPausePreview();
     updateSetDeviceLockPreview();
+    updateSetAutoPowerOffPreview();
     updateSoundHornPreview();
     updateSetSpeedLevelPreview();
-    updateSetMaxSpeedModePreview();
-    updateGetDeviceInfoPreview();
+    updateSetMaxSpeedLevelPreview();
+    updateGetIdentificationPreview();
 
     // Joystick initialization
     initJoystick();

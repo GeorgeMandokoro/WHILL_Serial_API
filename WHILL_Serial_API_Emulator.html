@@ -465,9 +465,9 @@
             <div class="motor-status-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #0075B8; border-radius: 8px; padding: 8px;">
               <div class="motor-status-header" style="font-weight: bold; color: #0075B8; text-align: center;">⚙️ System</div>
               <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Power:</span><span id="live-power-status" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
-              <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Speed Mode:</span><span id="live-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
               <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Error:</span><span id="live-error-code" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
               <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Counter:</span><span id="live-angle-counter" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+              <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Trip:</span><span id="live-trip-distance" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
             </div>
             <!-- Angle -->
             <div class="motor-status-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #0075B8; border-radius: 8px; padding: 8px;">
@@ -483,13 +483,17 @@
             </div>
           </div>
           <!-- Joystick -->
-          <div class="motor-status-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #0075B8; border-radius: 8px; padding: 8px; flex: 0 0 150px;">
+          <div class="motor-status-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 2px solid #0075B8; border-radius: 8px; padding: 8px; flex: 0 0 185px;">
             <div class="motor-status-header" style="font-weight: bold; color: #0075B8; text-align: center;">🎮 Joystick</div>
             <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">F/B:</span><span id="live-joystick-forward" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
             <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">L/R:</span><span id="live-joystick-turn" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
-            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Lock:</span><span id="live-joystick-lock" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
-            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Max Spd:</span><span id="live-max-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
-            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Dir:</span><span id="live-joystick-direction" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Pause:</span><span id="live-joystick-pause" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Max Speed Level:</span><span id="live-max-speed-level" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+            <!-- Speed Level (Selected): ユーザー選択値。Max Speed Levelでは頭打ちにならない。 -->
+            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Speed Level (Selected):</span><span id="live-speed-level" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+            <!-- Speed Level (Effective): MCが実際に適用中の値(speed_mode_indicator)。制限中はSelectedと乖離する。 -->
+            <div class="motor-status-item" style="display: flex; justify-content: space-between;"><span class="motor-status-label" style="font-weight: bold; color: #0075B8;">Speed Level (Effective):</span><span id="live-speed-mode" class="motor-status-value" style="color: #000; font-weight: bold;">-</span></div>
+            
           </div>
         </div>
       </div>
@@ -575,7 +579,7 @@
       <!-- ===== Device / Capability tab ===== -->
       <div id="device-tab" class="tab-content">
         <div class="panel">
-          <div class="panel-title">Firmware / API Version (served on GET_DEVICE_INFO &amp; GET_CAPABILITY)</div>
+          <div class="panel-title">Firmware / API Version (served on GET_IDENTIFICATION &amp; GET_CAPABILITY)</div>
           <div class="settings-row">
             <label>FW Version</label>
             <input type="number" id="fw-major" min="80" max="89" value="89"> .
@@ -641,26 +645,29 @@
       { id: 3,  name: 'SET_JOYSTICK' },
       { id: 4,  name: 'SET_SPEED_PROFILE' },
       { id: 6,  name: 'SET_BATTERY_SAVING' },
-      { id: 7,  name: 'GET_DEVICE_INFO' },
+      { id: 7,  name: 'GET_IDENTIFICATION' },
       { id: 8,  name: 'SET_VELOCITY' },
-      { id: 9,  name: 'SET_JOYSTICK_DIRECTION' },
-      { id: 10, name: 'SET_JOYSTICK_LOCK' },
-      { id: 11, name: 'SET_MAX_SPEED_MODE' },
+      { id: 9,  name: 'SET_DEVICE_LOCK' },
+      { id: 10, name: 'SET_JOYSTICK_PAUSE' },
+      { id: 11, name: 'SET_MAX_SPEED_LEVEL' },
       { id: 12, name: 'SET_SPEED_LEVEL' },
       { id: 13, name: 'SOUND_HORN' },
-      { id: 14, name: 'SET_DEVICE_LOCK' },
-      { id: 15, name: 'GET_DEVICE_LOCK' },
+      { id: 14, name: 'SET_AUTO_POWER_OFF' },
+      { id: 15, name: 'GET_SETTINGS' },
       { id: 16, name: 'GET_CAPABILITY' },
     ];
     // Commands advertised in the capability map (public set, fixed per SM Serial API version).
-    // Non-public (not advertised): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_DEVICE_INFO /
-    // 9 SET_JOYSTICK_DIRECTION.
-    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 10, 11, 12, 13, 14, 15, 16];
-    // Public Dataset1 offsets. Non-public: 0 low_battery_level / 1 sounds_buzzer / 4 joystick_direction.
+    // Non-public (not advertised): 5 SET_BATTERY_VOLTAGE / 6 SET_BATTERY_SAVING / 7 GET_IDENTIFICATION.
+    // ID 17 is permanently reserved and never re-assigned.
+    const CAP_MAP_COMMAND_IDS = [0, 1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    // Public Dataset1 offsets. Non-public: 0 low_battery_level / 1 sounds_buzzer / 7 reserved.
     const CAP_DATA_FIELDS = [
-      { offset: 2,  name: 'Joystick Lock' },
-      { offset: 3,  name: 'Max Speed Mode' },
-      { offset: 5,  name: 'Device Lock' },
+      { offset: 2,  name: 'Device Lock' },
+      { offset: 3,  name: 'Joystick Pause' },
+      { offset: 4,  name: 'Max Speed Level' },
+      { offset: 5,  name: 'Speed Level (Selected)' },
+      { offset: 6,  name: 'Auto Power Off' },
+      { offset: 8,  name: 'Trip Distance' },
       { offset: 12, name: 'Joystick F/B' },
       { offset: 13, name: 'Joystick L/R' },
       { offset: 14, name: 'Battery Level' },
@@ -670,7 +677,7 @@
       { offset: 21, name: 'Right Motor Speed' },
       { offset: 23, name: 'Left Motor Speed' },
       { offset: 25, name: 'Power' },
-      { offset: 26, name: 'Speed Mode' },
+      { offset: 26, name: 'Speed Level (Effective)' },
       { offset: 27, name: 'Error' },
       { offset: 28, name: 'Angle Counter' },
     ];
@@ -679,10 +686,12 @@
     const DS1_FIELDS = [
       { key: 'batterySaving',      group: 'System',  label: 'Battery Saving',  min: 0,      max: 255,   hint: 'raw' },
       { key: 'buzzer',             group: 'System',  label: 'Buzzer',          min: 0,      max: 255,   hint: 'raw' },
-      { key: 'joystickLock',       group: 'Joystick',label: 'Joystick Lock',   min: 0,      max: 1,     hint: '1=lock' },
+      { key: 'joystickPause',      group: 'Joystick',label: 'Joystick Pause',  min: 0,      max: 1,     hint: '1=pause' },
       { key: 'deviceLock',         group: 'System',  label: 'Device Lock',     min: 0,      max: 1,     hint: '1=lock' },
-      { key: 'maxSpeedMode',       group: 'Joystick',label: 'Max Speed Mode',  min: 0,      max: 255,   hint: '0-based' },
-      { key: 'joystickDirection',  group: 'Joystick',label: 'Joystick Dir',    min: -128,   max: 127,   hint: '×2°' },
+      { key: 'autoPowerOff',       group: 'System',  label: 'Auto Power Off',  min: 0,      max: 1,     hint: '1=enable' },
+      { key: 'maxSpeedLevel',      group: 'Joystick',label: 'Max Speed Level', min: 0,      max: 255,   hint: '1-4' },
+      { key: 'speedLevel',         group: 'Joystick',label: 'Speed Lv (Sel)',  min: 0,      max: 255,   hint: '1-4, uncapped' },
+      { key: 'speedMode',          group: 'Joystick',label: 'Speed Lv (Eff)',  min: 0,      max: 255,   hint: '0-based, capped' },
       { key: 'joystickForward',    group: 'Joystick',label: 'Joystick F/B',    min: -128,   max: 127,   hint: 'signed' },
       { key: 'joystickTurn',       group: 'Joystick',label: 'Joystick L/R',    min: -128,   max: 127,   hint: 'signed' },
       { key: 'batteryLevel',       group: 'Battery', label: 'Battery Level',   min: 0,      max: 100,   hint: '%' },
@@ -692,21 +701,24 @@
       { key: 'motorSpeedRight',    group: 'Motor Speed', label: 'Speed Right', min: -32768, max: 32767, hint: '×0.004 km/h' },
       { key: 'motorSpeedLeft',     group: 'Motor Speed', label: 'Speed Left',  min: -32768, max: 32767, hint: '×0.004 km/h' },
       { key: 'power',              group: 'System',  label: 'Power',           min: 0,      max: 1,     hint: '0=OFF 1=ON' },
-      { key: 'speedMode',          group: 'System',  label: 'Speed Mode',      min: 0,      max: 255,   hint: '0-based' },
       { key: 'errorCode',          group: 'System',  label: 'Error Code',      min: 0,      max: 255,   hint: '0=none' },
       { key: 'angleCounter',       group: 'System',  label: 'Angle Counter',   min: 0,      max: 255,   hint: 'raw' },
+      { key: 'tripDistance',       group: 'System',  label: 'Trip Distance',   min: 0,      max: 4294967295, hint: 'm', bits: 32 },
     ];
+    // Bit width of a Dataset1 field (defaults inferred from the min value of the legacy definitions).
+    function ds1FieldBits(f) { return f.bits || (f.min === -32768 ? 16 : 8); }
     const DS1_GROUP_ORDER = ['Battery', 'System', 'Motor Angle', 'Motor Speed', 'Joystick'];
 
     function defaultDataset1() {
       return {
         batterySaving: 19, buzzer: 0,
-        joystickLock: 0, deviceLock: 0, maxSpeedMode: 3, joystickDirection: 0,
+        joystickPause: 0, deviceLock: 0, autoPowerOff: 1, maxSpeedLevel: 4, speedLevel: 1,
         joystickForward: 0, joystickTurn: 0,
         batteryLevel: 75, batteryCurrent: 0,
         motorAngleRight: 0, motorAngleLeft: 0,
         motorSpeedRight: 0, motorSpeedLeft: 0,
         power: 0, speedMode: 0, errorCode: 0, angleCounter: 0,
+        tripDistance: 0,
       };
     }
 
@@ -834,11 +846,15 @@
       const data = new Array(29).fill(0);
       data[0]  = d.batterySaving & 0xFF;
       data[1]  = d.buzzer & 0xFF;
-      data[2]  = d.joystickLock & 0xFF;
-      data[3]  = d.maxSpeedMode & 0xFF;
-      data[4]  = d.joystickDirection & 0xFF;
-      data[5]  = d.deviceLock & 0xFF;
-      // 6..11 reserved
+      data[2]  = d.deviceLock & 0xFF;
+      data[3]  = d.joystickPause & 0xFF;
+      data[4]  = d.maxSpeedLevel & 0xFF;
+      data[5]  = d.speedLevel & 0xFF;
+      data[6]  = d.autoPowerOff & 0xFF;
+      data[7]  = 0;  // reserved (formerly joystick orientation)
+      const td = (d.tripDistance >>> 0);  // 8..11 trip_distance [m], MSB first
+      data[8]  = (td >>> 24) & 0xFF; data[9]  = (td >>> 16) & 0xFF;
+      data[10] = (td >>> 8)  & 0xFF; data[11] = td & 0xFF;
       data[12] = d.joystickForward & 0xFF;
       data[13] = d.joystickTurn & 0xFF;
       data[14] = d.batteryLevel & 0xFF;
@@ -865,28 +881,37 @@
       const min = state.version.minor & 0xFF;
       return legacy
         ? withChecksum([0xAF, 0x03, maj, min])                // legacy GetFwVersion (unchanged): AF 03 maj min cs
-        // GetDeviceInfo(0): AF 09 [cmd 0x07][type 0x00] SM(maj,min) HMI(0,0) MC(0,0) cs
+        // GetIdentification(0): AF 09 [cmd 0x07][type 0x00] SM(maj,min) HMI(0,0) MC(0,0) cs
         // (この Emulator は SM 版のみモデル化。HMI/MC は 0.0 で埋める)
         : withChecksum([0xAF, 0x09, 0x07, 0x00, maj, min, 0x00, 0x00, 0x00, 0x00]);
     }
     function buildPowerOnAckFrame() {
       return withChecksum([0xAF, 0x02, 0x52]);          // -> AF 02 52 FF (released; unchanged)
     }
-    function buildDeviceLockFrame() {
-      // AF 03 [cmd 0x0F=GET_DEVICE_LOCK] [lock] cs
-      return withChecksum([0xAF, 0x03, 0x0F, state.dataset1.deviceLock & 0xFF]);
+    function buildSettingsFrame() {
+      // AF 08 [cmd 0x0F=GET_SETTINGS] [device_lock][joystick_pause][max_speed_level]
+      //       [speed_level][auto_power_off][power_on] cs
+      // フィールド順は Dataset1 offset 2-6 と同順 + power_on(Dataset1 offset25)。
+      const d = state.dataset1;
+      return withChecksum([0xAF, 0x08, 0x0F,
+        d.deviceLock & 0xFF, d.joystickPause & 0xFF, d.maxSpeedLevel & 0xFF,
+        d.speedLevel & 0xFF, d.autoPowerOff & 0xFF, d.power & 0xFF]);
     }
-    // Build a 4-byte bitmap from a list of bit indices (byte = floor(i/8), bit = i%8).
-    function buildBitMap(indices) {
-      const map = [0, 0, 0, 0];
-      indices.forEach(i => { const byte = Math.floor(i / 8); if (byte < 4) map[byte] |= (1 << (i % 8)); });
+    // Bitmap byte lengths of the capability response (command map: IDs 0-63, data map: Dataset1 offsets 0-31).
+    const CAP_COMMAND_MAP_LEN = 8;
+    const CAP_DATA_MAP_LEN    = 4;
+    // Build a bitmap of `byteLen` bytes from a list of bit indices (byte = floor(i/8), bit = i%8).
+    function buildBitMap(indices, byteLen) {
+      const map = new Array(byteLen).fill(0);
+      indices.forEach(i => { const byte = Math.floor(i / 8); if (byte < byteLen) map[byte] |= (1 << (i % 8)); });
       return map;
     }
     function buildCapabilityFrame() {
-      const cmdMap  = buildBitMap(getEnabledCommandIds());
-      const dataMap = buildBitMap(getEnabledDataOffsets());
-      // AF 0C [cmd 0x10=GET_CAPABILITY] [api_major][api_minor] [cmdMap 4][dataMap 4] cs
-      return withChecksum([0xAF, 0x0C, 0x10,
+      const cmdMap  = buildBitMap(getEnabledCommandIds(), CAP_COMMAND_MAP_LEN);
+      const dataMap = buildBitMap(getEnabledDataOffsets(), CAP_DATA_MAP_LEN);
+      // AF 10 [cmd 0x10=GET_CAPABILITY] [api_major][api_minor] [cmdMap 8][dataMap 4] cs
+      const len = CAP_COMMAND_MAP_LEN + CAP_DATA_MAP_LEN + 4;  // cmd id + api(2) + maps + checksum
+      return withChecksum([0xAF, len, 0x10,
         state.apiVersion.major & 0xFF, state.apiVersion.minor & 0xFF,
         ...cmdMap, ...dataMap]);
     }
@@ -1172,9 +1197,9 @@
           syncDataset1Inputs();
           break;
         }
-        case 0x07: { // GET_DEVICE_INFO / legacy GetFwVersion
+        case 0x07: { // GET_IDENTIFICATION / legacy GetFwVersion
           const legacy = (params.length === 0); // AF 02 07 AA has no parameter
-          name = legacy ? 'GET_FW_VERSION (legacy)' : 'GET_DEVICE_INFO';
+          name = legacy ? 'GET_FW_VERSION (legacy)' : 'GET_IDENTIFICATION';
           if (!legacy) fields = [['Info Type', params[0] ?? 0]];
           if (state.autoRespond) sendFrame(legacy ? 'FW version (legacy)' : 'FW version', buildVersionFrame(legacy));
           break;
@@ -1193,29 +1218,34 @@
           }
           break;
         }
-        case 0x09: { // SET_JOYSTICK_DIRECTION
-          name = 'SET_JOYSTICK_DIRECTION';
-          const dir = s8(params[0] ?? 0);
-          fields = [['Direction', `${dir} (${dir * 2}°)`]];
-          state.dataset1.joystickDirection = dir & 0xFF;
-          syncDataset1Inputs();
-          updateLiveView();
-          break;
-        }
-        case 0x0A: { // SET_JOYSTICK_LOCK
-          name = 'SET_JOYSTICK_LOCK';
+        case 0x09: { // SET_DEVICE_LOCK
+          name = 'SET_DEVICE_LOCK';
           const l = params[0] ?? 0;
+          // 1 との一致判定のみ。1 以外はすべて Unlock 扱い。
           fields = [['Lock', l === 1 ? 'Locked (1)' : `Unlocked (${l})`]];
-          state.dataset1.joystickLock = l;
+          state.dataset1.deviceLock = (l === 1) ? 1 : 0;
           syncDataset1Inputs();
           updateLiveView();
           break;
         }
-        case 0x0B: { // SET_MAX_SPEED_MODE
-          name = 'SET_MAX_SPEED_MODE';
-          const m = params[0] ?? 0;
-          fields = [['Max Speed Mode', m]];
-          state.dataset1.maxSpeedMode = m;
+        case 0x0A: { // SET_JOYSTICK_PAUSE
+          name = 'SET_JOYSTICK_PAUSE';
+          const l = params[0] ?? 0;
+          fields = [['Pause', l === 1 ? 'Paused (1)' : `Active (${l})`]];
+          state.dataset1.joystickPause = l;
+          syncDataset1Inputs();
+          updateLiveView();
+          break;
+        }
+        case 0x0B: { // SET_MAX_SPEED_LEVEL
+          name = 'SET_MAX_SPEED_LEVEL';
+          const raw = params[0] ?? 0;
+          // 実機(SM)は範囲外を 1-4 にクランプする。
+          const m = Math.min(4, Math.max(1, raw));
+          fields = [['Max Speed Level', m]];
+          if (m !== raw) fields.push(['(clamped from)', raw]);
+          state.dataset1.maxSpeedLevel = m;
+          applyEffectiveSpeedMode();
           syncDataset1Inputs();
           updateLiveView();
           break;
@@ -1224,9 +1254,10 @@
           name = 'SET_SPEED_LEVEL';
           const lv = params[0] ?? 0;
           fields = [['Speed Level', lv]];
-          // 実機は OFF/standby 時に適用。ここでは speed mode indicator(0-based) に反映して模擬する。
+          // 実機は OFF/standby 時に適用。範囲外は HMI が reject する。
           if (lv >= 1 && lv <= 4) {
-            state.dataset1.speedMode = lv - 1;
+            state.dataset1.speedLevel = lv;
+            applyEffectiveSpeedMode();
             syncDataset1Inputs();
             updateLiveView();
           } else {
@@ -1241,20 +1272,28 @@
           // 瞬時トリガのため保持状態は無い（鳴動はHMI/MC側の挙動）。
           break;
         }
-        case 0x0E: { // SET_DEVICE_LOCK
-          name = 'SET_DEVICE_LOCK';
-          const l = params[0] ?? 0;
-          fields = [['Lock', l === 1 ? 'Locked (1)' : `Unlocked (${l})`]];
-          state.dataset1.deviceLock = (l === 1) ? 1 : 0;
+        case 0x0E: { // SET_AUTO_POWER_OFF
+          name = 'SET_AUTO_POWER_OFF';
+          const a = params[0] ?? 0;
+          fields = [['Auto Power Off', a === 1 ? 'Enabled (1)' : `Disabled (${a})`]];
+          // 無操作継続時の自動電源OFF。有効の間 SM は RUN状態継続要求を送らない。応答は無い。
+          state.dataset1.autoPowerOff = (a === 1) ? 1 : 0;
           syncDataset1Inputs();
           updateLiveView();
           break;
         }
-        case 0x0F: { // GET_DEVICE_LOCK
-          name = 'GET_DEVICE_LOCK';
-          fields = [['Lock', state.dataset1.deviceLock === 1 ? 'Locked (1)' : 'Unlocked (0)']];
-          // 要求→応答。電源状態に依らず現在のロック状態を返す。
-          if (state.autoRespond) sendFrame('Device Lock', buildDeviceLockFrame());
+        case 0x0F: { // GET_SETTINGS
+          name = 'GET_SETTINGS';
+          fields = [
+            ['Device Lock', state.dataset1.deviceLock],
+            ['Joystick Pause', state.dataset1.joystickPause],
+            ['Max Speed Level', state.dataset1.maxSpeedLevel],
+            ['Speed Level', state.dataset1.speedLevel],
+            ['Auto Power Off', state.dataset1.autoPowerOff],
+            ['Power On', state.dataset1.power & 0xFF],
+          ];
+          // 要求→応答。電源状態に依らず現在の設定値をまとめて返す。
+          if (state.autoRespond) sendFrame('Settings', buildSettingsFrame());
           break;
         }
         case 0x10: { // GET_CAPABILITY
@@ -1262,6 +1301,7 @@
           if (state.autoRespond) sendFrame('Capability', buildCapabilityFrame());
           break;
         }
+
         default:
           name = `UNKNOWN (id 0x${(cmd ?? 0).toString(16).toUpperCase().padStart(2, '0')})`;
           fields = [['Params', params.length ? toHex(params) : '(none)']];
@@ -1302,6 +1342,13 @@
       }).join('');
     }
 
+    // speed_mode_indicator は MC が実際に適用する 0起点の値で、max speed level で頭打ちになる。
+    // speed_level(ユーザー選択値) は頭打ちにならないため、制限中は両者がずれる。
+    function applyEffectiveSpeedMode() {
+      const d = state.dataset1;
+      d.speedMode = Math.min(d.speedLevel, d.maxSpeedLevel) - 1;
+    }
+
     // ========================= Live status view (right strip) =========================
     function updateLiveView() {
       const d = state.dataset1;
@@ -1309,18 +1356,21 @@
       set('live-battery-level', `${d.batteryLevel}%`);
       set('live-battery-current', `${(s16Val(d.batteryCurrent) * 2).toFixed(0)}mA`);
       set('live-power-status', d.power ? 'ON' : 'OFF');
-      set('live-speed-mode', d.speedMode + 1);
       set('live-error-code', d.errorCode ? d.errorCode : 'None');
       set('live-angle-counter', d.angleCounter);
+      // trip_distance は 1m 単位。表示は km に統一する。
+      set('live-trip-distance', `${((d.tripDistance >>> 0) / 1000).toFixed(2)}km`);
       set('live-motor-angle-right', `${(s16Val(d.motorAngleRight) * 0.001).toFixed(3)}rad`);
       set('live-motor-angle-left', `${(s16Val(d.motorAngleLeft) * 0.001).toFixed(3)}rad`);
       set('live-motor-speed-right', `${(s16Val(d.motorSpeedRight) * 0.004).toFixed(3)}km/h`);
       set('live-motor-speed-left', `${(s16Val(d.motorSpeedLeft) * 0.004).toFixed(3)}km/h`);
       set('live-joystick-forward', s8(d.joystickForward & 0xFF));
       set('live-joystick-turn', s8(d.joystickTurn & 0xFF));
-      set('live-joystick-lock', d.joystickLock === 1 ? 'Locked' : 'Unlocked');
-      set('live-max-speed-mode', d.maxSpeedMode + 1);
-      set('live-joystick-direction', `${s8(d.joystickDirection & 0xFF) * 2}°`);
+      set('live-joystick-pause', d.joystickPause === 1 ? 'Paused' : 'Active');
+      set('live-max-speed-level', d.maxSpeedLevel);
+      set('live-speed-level', d.speedLevel);
+      // speed_mode_indicator は 0起点なのでレベル表記(+1)にして並べる。
+      set('live-speed-mode', d.speedMode + 1);
 
       const err = document.getElementById('live-error-code');
       if (err) { err.style.color = d.errorCode ? '#E94816' : '#000'; err.style.fontWeight = d.errorCode ? 'bold' : 'bold'; }
@@ -1350,7 +1400,9 @@
         const el = document.getElementById(`ds1-${f.key}`);
         el.addEventListener('input', () => {
           let v = parseInt(el.value, 10); if (isNaN(v)) v = 0;
-          state.dataset1[f.key] = (f.min === -32768) ? (v & 0xFFFF) : (v & 0xFF);
+          const bits = ds1FieldBits(f);
+          const mask = bits === 32 ? 0xFFFFFFFF : (bits === 16 ? 0xFFFF : 0xFF);
+          state.dataset1[f.key] = (v & mask) >>> 0;
           updateLiveView();
         });
       });
