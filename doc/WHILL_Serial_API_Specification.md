@@ -1,4 +1,9 @@
-# WHILL Serial API Specification
+<p align="center">
+  <img src="./images/whill_logo.svg" alt="WHILL" width="100">
+</p>
+<h1 align="center">
+  WHILL Serial API Specification
+</h1>
 
 The **WHILL Serial API** — the serial (RS232C) command and data interface of the **WHILL Model CR2**, provided by WHILL, Inc.
 
@@ -8,7 +13,7 @@ The **WHILL Serial API** — the serial (RS232C) command and data interface of t
 | **Not covered** | Omni-Platform (4WD) |
 | **Transport** | RS232C, 38400 bps, 8-N-2 |
 | **Serial API version** | 1.1 |
-| **Revision** | Rev 11 (2026-07-31) |
+| **Revision** | Rev 1 (2026-09-01) |
 
 > Wheeled Robot Base and Electrical System Kit share the software specification of **Model CR2** — every "Model CR2" description in this document applies to them.
 
@@ -41,7 +46,7 @@ sequenceDiagram
     autonumber
     participant H as Host
     participant W as WHILL
-    Note over W: Control commands are ignored<br/>for the first 10 s after WHILL boots
+    Note over W: Commands can be used from approx. 20 s<br/>after the battery is inserted
     H->>W: GetCapability
     W-->>H: Capability response 0x10
     Note right of H: optional — discover published commands / data
@@ -59,7 +64,7 @@ sequenceDiagram
     end
 ```
 
-> Control commands are **ignored for the first 10 s after WHILL boots**, while the system stabilizes. Bytes received during this window are discarded.
+> Control commands can be used from **approximately 20 s after the battery is inserted**, once WHILL has started up and the system has stabilized. Bytes received before that are discarded.
 
 ---
 
@@ -111,40 +116,44 @@ stateDiagram-v2
     state "Sleep — software standby" as SLEEP
 
     [*] --> BOOT : battery connected
-    BOOT --> OFF : 10 s after WHILL boots
+    BOOT --> OFF : approx. 20 s after the battery is inserted
     OFF --> ON : SetPower ON, or power button
     ON --> OFF : SetPower OFF, power button, or auto power off
-    OFF --> SLEEP : approx. 90 s after the power is turned off
+    OFF --> SLEEP : approx. 90 s after the power is turned off (most units)
     SLEEP --> OFF : any byte received on RXD
 ```
 
 | State | Description | Serial interface |
 |---|---|---|
-| **Booting** | ~10 s after the battery is connected or WHILL is reset. | Received bytes are **discarded**. No command takes effect, no response is returned. |
+| **Booting** | Approximately **20 s** after the battery is inserted or WHILL is reset. | Received bytes are **discarded**. No command takes effect, no response is returned. |
 | **Power OFF — awake** | Power is off, but WHILL is still running internally. | Commands are received. State data is **not** streamed. |
 | **Power ON** | Power is on, WHILL can drive. | All commands are received. State data is streamed. |
 | **Sleep** | Software standby, entered approximately **90 s** after the power is turned off. | The **first frame received is consumed as the wake-up trigger and discarded**. See [§3.2](#32-waking-whill-up-from-sleep). |
+
+> Some earlier units do not enter software standby and behave differently on a low battery — see [§3.3](#33-deep-sleep-on-low-battery-earlier-units).
 
 ### 3.1 Command availability per state
 
 | Command | Power ON | Power OFF — awake |
 |---|:---:|---|
-| [`StartSendingData`](#41-startsendingdata-0x00) / [`StopSendingData`](#42-stopsendingdata-0x01) | ✅ | ✅ — the setting is kept; streaming starts at the next power-on |
 | [`SetPower`](#43-setpower-0x02) | ✅ | ✅ |
-| [`SetJoystick`](#44-setjoystick-0x03) / [`SetVelocity`](#46-setvelocity-0x08) | ✅ | ▲ WHILL does not move while the power is off |
-| [`SetSpeedProfile`](#45-setspeedprofile-0x04) | ✅ | ▲ send while the power is on |
-| [`SetJoystickPause`](#410-setjoystickpause-0x0a) | ✅ | ▲ affects driving, so send while the power is on |
-| [`SetMaxSpeedLevel`](#411-setmaxspeedlevel-0x0b) | ✅ | ▲ affects driving, so send while the power is on |
 | [`SetSpeedLevel`](#412-setspeedlevel-0x0c) | ❌ ignored | ✅ — this is the intended state |
-| [`SoundHorn`](#413-soundhorn-0x0d) | ✅ | ▲ send while the power is on |
 | [`SetDeviceLock`](#49-setdevicelock-0x09) / [`GetSettings`](#415-getsettings-0x0f) | ✅ | ✅ |
 | [`GetCapability`](#416-getcapability-0x10) | ✅ | ✅ |
-| [`SetAutoPowerOff`](#414-setautopoweroff-0x0e) | ✅ | ✅ — the setting is kept and applies from the next power-on |
+| [`StartSendingData`](#41-startsendingdata-0x00) / [`StopSendingData`](#42-stopsendingdata-0x01) | ✅ | ▲ streaming resumes at the next power-on |
+| [`SetSpeedProfile`](#45-setspeedprofile-0x04) | ✅ | ▲ read back with data set 0 once the power is on |
+| [`SetJoystickPause`](#410-setjoystickpause-0x0a) | ✅ | ▲ read back with `GetSettings` |
+| [`SetMaxSpeedLevel`](#411-setmaxspeedlevel-0x0b) | ✅ | ▲ read back with `GetSettings` |
+| [`SetAutoPowerOff`](#414-setautopoweroff-0x0e) | ✅ | ▲ read back with `GetSettings` |
+| [`SoundHorn`](#413-soundhorn-0x0d) | ✅ | ✅ |
+| [`SetJoystick`](#44-setjoystick-0x03) / [`SetVelocity`](#46-setvelocity-0x08) | ✅ | ❌ not accepted while the power is off |
 | Data set 0 / data set 1 streaming | ✅ | ❌ paused |
 
-> ✅ = takes effect · ❌ = has no effect · ▲ = not specified in this state; use it as described.
->
-> A command with no effect in the current state is still received and discarded harmlessly — it never leaves WHILL in a bad state.
+> ✅ = supported · ▲ = accepted; confirm the result before relying on it · ❌ = not accepted / no effect.
+
+[`SetPower`](#43-setpower-0x02), [`SetSpeedLevel`](#412-setspeedlevel-0x0c), [`SetDeviceLock`](#49-setdevicelock-0x09), [`GetSettings`](#415-getsettings-0x0f) and [`GetCapability`](#416-getcapability-0x10) are the commands intended for use while the power is off. The commands marked ▲ **may be used as well** — they are accepted in this state — but their effect is not directly observable here, because state data is not streamed while the power is off. Read the result back with [`GetSettings`](#415-getsettings-0x0f) before relying on it; for values `GetSettings` does not report, confirm them once the power is on.
+
+A command that is not accepted in the current state is received and discarded harmlessly — it never leaves WHILL in a bad state.
 
 **Reading settings while the power is off** — the data set 1 setting fields are streamed only while the power is on. Use [`GetSettings`](#415-getsettings-0x0f) when the power may be off; it answers in every state.
 
@@ -170,9 +179,26 @@ sequenceDiagram
 
 > ⚠️ The 100 ms interval is **required**, not just recommended. WHILL needs time to resume after being woken, and a second frame sent too early is discarded as well.
 
-All commands that are useful while the power is off (`SetPower`, `SetDeviceLock`, `SetSpeedLevel`, `SetAutoPowerOff`, `GetSettings`, `GetCapability`) are idempotent, so sending them twice is harmless. Note that if WHILL was already awake, **both** frames are executed — expect **two responses** from `GetSettings` and `GetCapability` in that case.
+All commands that are recommended while the power is off (`SetPower`, `SetSpeedLevel`, `SetDeviceLock`, `GetSettings`, `GetCapability`) are idempotent, so sending them twice is harmless. Note that if WHILL was already awake, **both** frames are executed — expect **two responses** from `GetSettings` and `GetCapability` in that case.
 
 A missing response is therefore not an error condition on its own. Re-issue the request rather than treating the first timeout as a failure.
+
+### 3.3 Deep sleep on low battery (earlier units)
+
+Most WHILLs behave as described above. **Some earlier units** do not enter software standby after the power is turned off. Instead they shut down into a **deep sleep** as soon as the battery level reaches **19 % or below**. This is evaluated in **both power states, including while driving** — such a unit stops at 19 % rather than running the battery down to 0 %. Size the duty cycle of your application accordingly.
+
+A WHILL in deep sleep responds to nothing on RXD. The wake-up procedure of [§3.2](#32-waking-whill-up-from-sleep) does **not** recover it, and no amount of retrying will. Treat a WHILL that stays silent throughout that procedure as needing physical intervention, not as a communication fault.
+
+**Recovery**
+
+1. Set the power switch to off.
+2. Remove the battery from the WHILL.
+3. Leave the battery out for **at least 20 minutes**, so that the WHILL discharges completely.
+4. Install a fully charged battery.
+
+> Connecting a charger to the installed battery does **not** recover the unit. Steps 3 and 4 are both required.
+
+**Does this apply to my WHILL?** Affected units were supplied with a *printed* specification at purchase. If you are unsure, contact WHILL support.
 
 ---
 
@@ -196,6 +222,8 @@ A missing response is therefore not an error condition on its own. Re-issue the 
 | `0x10` | [GetCapability](#416-getcapability-0x10) | Read the published commands / data | [0x10](#63-capability-response) |
 
 > Command IDs not listed above (`0x05`–`0x07`, and `0x11` and above) are **reserved**. Do not use them; they are excluded from the [capability response](#63-capability-response) and their behaviour may change without notice.
+
+**Settings are reset when the battery is removed and re-inserted.** Values applied by the commands in this section return to their defaults, so the host must set them again after a battery change. The only exceptions are [`SetSpeedProfile`](#45-setspeedprofile-0x04) and [`SetDeviceLock`](#49-setdevicelock-0x09), which are retained.
 
 ### 4.1 StartSendingData (`0x00`)
 
@@ -266,6 +294,7 @@ sequenceDiagram
 > - After power-on completes, WHILL returns the [power-on response](#61-power-on-response). Send no other command until it arrives.
 > - WHILL answers only if the power-on is confirmed within **15 ms** of accepting the command. Powering on physically takes longer than that, so **re-issue `SetPower` (ON) until the response arrives** — several attempts are normal.
 > - After sending Power OFF, wait **more than 5 s** before sending Power ON.
+> - Power ON has **no effect while WHILL is locked** by [`SetDeviceLock`](#49-setdevicelock-0x09). Unlock it first.
 
 ### 4.4 SetJoystick (`0x03`)
 
@@ -361,7 +390,7 @@ Values stay effective for **200 ms**; resend within that window to keep moving. 
 
 ### 4.9 SetDeviceLock (`0x09`)
 
-Locks or unlocks the mobility device, equivalent to lock/unlock in the WHILL BLE app.
+Locks or unlocks the mobility device.
 
 ```
 AF 03 09 D0 CS
@@ -396,8 +425,8 @@ sequenceDiagram
 
 - There is **no response**. To confirm the new state, follow with `GetSettings`.
 - The request is relayed to the HMI and Motor Controller, so the state change is not instantaneous. Allow a short interval before reading it back.
-- Accepted **regardless of the power state**, and the state survives a power off/on cycle.
-- Lock/unlock from the WHILL app and from this command act on the same state — either one is visible through both interfaces.
+- Accepted **regardless of the power state**.
+- **Locking turns the power off**, and [`SetPower`](#43-setpower-0x02) (ON) has no effect while WHILL is locked. To drive a locked WHILL, unlock it first and then send `SetPower` (ON).
 
 The current state is also reported in [data set 1](#52-data-set-1--live-state) byte 2 (`DEVICE_LOCK`) while the power is on.
 
@@ -453,7 +482,7 @@ The current value is reported in [data set 1](#52-data-set-1--live-state) byte 4
 
 ### 4.12 SetSpeedLevel (`0x0C`)
 
-Selects the speed level, equivalent to the same operation from the cloud.
+Selects the speed level.
 
 ```
 AF 03 0C S0 CS
@@ -480,7 +509,7 @@ The current value is reported in [data set 1](#52-data-set-1--live-state) byte 5
 
 ### 4.13 SoundHorn (`0x0D`)
 
-Sounds the horn, equivalent to the horn button in the WHILL BLE app.
+Sounds the horn.
 
 ```
 AF 03 0D D0 CS
@@ -652,10 +681,10 @@ Continuously changing values (settings echo, odometer, joystick, battery current
 | 19–20 | `LEFT_MOTOR_ANGLE` (MSB, LSB) | Left motor angle — [Note 4](#note-4--motor-angle) |
 | 21–22 | `RIGHT_MOTOR_SPEED` (MSB, LSB) | Right motor speed — [Note 5](#note-5--motor-speed) |
 | 23–24 | `LEFT_MOTOR_SPEED` (MSB, LSB) | Left motor speed — [Note 5](#note-5--motor-speed) |
-| 25 | `POWER_ON` | Power state. `1` = ON, `0` = OFF |
-| 26 | `SPEED_MODE_INDICATOR` | Speed mode the Motor Controller actually applies — [Note 6](#note-6--speed_mode_indicator) |
+| 25 | `POWER_ON` | Power state. **Always `1`** here — [Note 6](#note-6--power_on) |
+| 26 | `SPEED_MODE_INDICATOR` | Speed mode the Motor Controller actually applies — [Note 7](#note-7--speed_mode_indicator) |
 | 27 | `ERROR` | Error code. `0` = no error. |
-| 28 | `ANGLE_DETECT_COUNTER` | Motor-angle sampling timing — [Note 7](#note-7--angle_detect_counter) |
+| 28 | `ANGLE_DETECT_COUNTER` | Motor-angle sampling timing — [Note 8](#note-8--angle_detect_counter) |
 
 > Reserved bytes are still transmitted so that the byte offsets above stay fixed, but their contents are not part of the public API. Use [`GetCapability`](#416-getcapability-0x10) to confirm which offsets are published.
 >
@@ -702,15 +731,23 @@ Example: `0x0600` → 1.536 rad
 
 Example: `0x01F4` → 2 km/h
 
-For higher accuracy, derive speed from `*_MOTOR_ANGLE` and `ANGLE_DETECT_COUNTER` instead of using `*_MOTOR_SPEED`.
+#### Note 6 — `POWER_ON`
 
-#### Note 6 — `SPEED_MODE_INDICATOR`
+**Always reads `1` in data set 1.** Data set 1 is streamed only while WHILL is powered on, and this byte
+reports the very same power state that gates the stream — so a value of `0` never reaches the host here.
+
+To read the power state, use [`GetSettings`](#415-getsettings-0x0f), which answers regardless of power
+state. To detect a power-off, watch for the stream stopping, or poll `GetSettings`.
+
+> The field is kept at its published offset so that existing parsers are unaffected.
+
+#### Note 7 — `SPEED_MODE_INDICATOR`
 
 The speed mode the Motor Controller actually applies, **0-based**: mode `0`–`3` correspond to speed level `1`–`4`.
 
 > Note the different base from `SPEED_LEVEL` (byte 4) and `MAX_SPEED_LEVEL` (byte 3), which are 1-based.
 
-#### Note 7 — `ANGLE_DETECT_COUNTER`
+#### Note 8 — `ANGLE_DETECT_COUNTER`
 
 Indicates when the motor angles were sampled; used to improve odometry accuracy.
 
@@ -789,7 +826,7 @@ Both bitmaps are **LSB-first** within each byte. Both are fixed per Serial API v
 
 ```
 AF 10 10 01 01 1F FF 01 00 00 00 00 00 7C FF FF 1F 2D
-         └─┬─┘ └───────────┬──────────┘ └────┬────┘
+         └─┬─┘ └───────────┬─────────┘ └────┬────┘
         version         commands         data set 1
 ```
 
@@ -831,7 +868,7 @@ bool is_dataset1_byte_published(const uint8_t *s0, uint8_t offset) {
 
 | Constraint | Value |
 |---|---|
-| Command acceptance delay after WHILL boots | **10 s** (commands are discarded until then) |
+| Command acceptance delay after the battery is inserted | approx. **20 s** (commands are discarded until then) |
 | Interval between consecutive control commands | **≥ 2 ms** |
 | Interval between bytes within one command | **< 5 ms** (otherwise the frame under construction is discarded) |
 | Maximum length of one command frame | **24 bytes** |
@@ -839,7 +876,7 @@ bool is_dataset1_byte_published(const uint8_t *s0, uint8_t offset) {
 | Validity of `SetJoystick` / `SetVelocity` | **200 ms** |
 | Response wait after `SetPower` (ON) | **15 ms**, then re-issue |
 | Wait between Power OFF and Power ON | **> 5 s** |
-| Transition to sleep after Power OFF | approx. **90 s** |
+| Transition to sleep after Power OFF | approx. **90 s** — most units; see [§3.3](#33-deep-sleep-on-low-battery-earlier-units) |
 | Wait after the wake-up frame, before the frame to be executed | **≥ 100 ms** |
 
 > Send one command per frame and wait for the interval above. If several commands arrive back to back within one read cycle, only the **last** one is processed.
@@ -862,14 +899,4 @@ bool is_dataset1_byte_published(const uint8_t *s0, uint8_t offset) {
 
 | Rev | Date | Changes |
 |---|---|---|
-| 11 | 2026-08-02 | Serial API 1.1. Added `SetDeviceLock` (`0x09`), `SetSpeedLevel` (`0x0C`), `SoundHorn` (`0x0D`), `SetAutoPowerOff` (`0x0E`), `GetSettings` (`0x0F`) and `GetCapability` (`0x10`); added `DEVICE_LOCK`, `SPEED_LEVEL`, `AUTO_POWER_OFF` and `TRIP_DISTANCE` to data set 1 and reordered bytes 2–7 so the settings follow their command IDs; renamed `SetJoystickLock` to `SetJoystickPause`; changed `SetMaxSpeedMode` (`0x0B`) to `SetMaxSpeedLevel` with a 1-based `1`–`4` parameter; removed `SetBatterySaving`, `LOW_BATTERY_LEVEL` and `BUZZER_ENABLE`; added the power state / sleep section; corrected the `SetPower` response wait to 15 ms |
-| 10 | 2024-12-02 | Added `SetBatterySaving`; added `LOW_BATTERY_LEVEL` and `BUZZER_ENABLE` to data set 1; corrected `SetSpeedProfile` ranges (`F_A1`, `R_D1`); corrected `ANGLE_DETECT_COUNTER` description for Model CR2 |
-| 9 | 2024-03-27 | Added "WHILL Model CR series" description to the preface |
-| 8 | 2023-11-10 | Added Model CR2 to tables 1–4 and pin assignment; added CR/CR2 comparison appendix; modified response wait time |
-| 7 | 2019-12-25 | Added `ANGLE_DETECT_COUNTER` to data set 1; revised data set 1 contents; added `SetVelocity` |
-| 6 | 2019-01-10 | Updated `SetPower` and response data descriptions for new firmware |
-| 5 | 2018-09-14 | Updated RS232C diagram |
-| 4 | 2018-01-31 | Removed `EmergencyBrake`; changed `SetSpeedProfile` ranges |
-| 3 | 2017-10-30 | Added `SPEED_MODE_INDICATOR` to data set 1; added `EmergencyBrake` |
-| 2 | 2017-08-23 | Revised command figures and wording |
-| 1 | 2017-08-22 | Initial release |
+| 1 | 2026-09-01 | Initial release of this document, covering Serial API 1.1. |
