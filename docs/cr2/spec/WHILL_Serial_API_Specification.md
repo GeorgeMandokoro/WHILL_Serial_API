@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../images/whill_logo.svg" alt="WHILL" width="100">
+  <img src="../../images/whill_logo.svg" alt="WHILL" width="100">
 </p>
 <h1 align="center">
   WHILL Serial API Specification
