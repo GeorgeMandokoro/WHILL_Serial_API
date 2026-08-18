@@ -17,8 +17,6 @@ Each specification also carries its own revision table in its final section.
 - `SetJoystick` (`0x03`), `SetSpeedProfile` (`0x04`), `SetMaxSpeedLevel` (`0x0B`) and `SetSpeedLevel` (`0x0C`) are documented as not supported: their acceleration profile is tuned for a rider being carried and is unsuitable for coordinated translation.
 - `SetVelocity` (`0x08`) is documented with the Omni parameter range of −1500 … 1500 on both axes, widened from the Model CR2 so that the platform moves sideways and rotates as fast as it moves forward.
 
-### Omni Platform — Tester
-- In preparation.
 
 ### Repository
 - Restructured for publication: everything served from `docs/` via GitHub Pages.
