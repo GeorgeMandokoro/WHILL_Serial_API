@@ -10,7 +10,7 @@ The **WHILL Serial API** — the serial (RS232C) command and data interface of t
 | | |
 |---|---|
 | **Applies to** | Model CR2, Wheeled Robot Base, Electrical System Kit |
-| **Not covered** | Omni-Platform (4WD) |
+| **Not covered** | Omni Platform (4WD) — see the [Omni Platform specification](https://whill.github.io/WHILL_Serial_API/omni/spec/) |
 | **Transport** | RS232C, 38400 bps, 8-N-2 |
 | **Serial API version** | 1.1 |
 | **Revision** | Rev 1 (2026-09-01) |

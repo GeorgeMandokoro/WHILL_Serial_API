@@ -27,11 +27,14 @@ Covers Model CR2, Wheeled Robot Base and Electrical System Kit. Two-wheel drive 
 | [**Tester**](https://whill.github.io/WHILL_Serial_API/cr2/tester/) | Send commands to a real WHILL and watch the returned state data live. |
 | [**Emulator**](https://whill.github.io/WHILL_Serial_API/cr2/emulator/) | Emulates a WHILL device — parses host commands and serves Dataset0 / Dataset1, so you can develop without hardware. |
 
-### Omni Platform
+### [Omni Platform](https://whill.github.io/WHILL_Serial_API/omni/)
 
-Two Model CR2 drive units mounted at 90° to each other, giving holonomic movement. Controlled through two RS232C interfaces driven in sync, with a reduced command set.
+Two Model CR2 drive units mounted at 90° to each other, making the platform holonomic — it moves in any direction without changing the direction the wheels point. Controlled through two RS232C interfaces driven in sync, with a reduced command set.
 
-**Documentation in preparation.**
+| | |
+|---|---|
+| [**Specification**](https://whill.github.io/WHILL_Serial_API/omni/spec/) | Companion document to the Model CR2 specification — the two interfaces, the motion model, the command set and the extended `SetVelocity` range. Markdown source: [`docs/omni/spec/`](docs/omni/spec/WHILL_Serial_API_Specification_Omni.md) |
+| **Tester** | In preparation. |
 
 ## Requirements
 
@@ -57,11 +60,15 @@ Your data never leaves your machine: the tools communicate only between the brow
 docs/                       GitHub Pages root (Settings → Pages → main / docs)
 ├── index.html              Product selector
 ├── images/                 Shared assets (logo, favicon)
-└── cr2/
-    ├── index.html          Model CR2 landing page
+├── cr2/
+│   ├── index.html          Model CR2 landing page
+│   ├── spec/               Markdown source + exported index.html
+│   ├── tester/index.html   Single self-contained file
+│   └── emulator/index.html Single self-contained file
+└── omni/
+    ├── index.html          Omni Platform landing page
     ├── spec/               Markdown source + exported index.html
-    ├── tester/index.html   Single self-contained file
-    └── emulator/index.html Single self-contained file
+    └── tester/             In preparation
 ```
 
 Each product gets its own directory under `docs/`. A new product is added as a sibling of `cr2/` — **never as a branch**, because GitHub Pages publishes only one branch and a second branch would not be served at all.
