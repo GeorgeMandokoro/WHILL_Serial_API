@@ -10,31 +10,31 @@
 </p>
 
 <p align="center">
-  <a href="https://whill.github.io/WHILL_Serial_API/"><b>whill.github.io/WHILL_Serial_API</b></a>
+  <a href="https://georgemandokoro.github.io/WHILL_Serial_API/"><b>georgemandokoro.github.io/WHILL_Serial_API</b></a>
 </p>
 
 ---
 
 ## Products
 
-### [Model CR2](https://whill.github.io/WHILL_Serial_API/cr2/)
+### [Model CR2](https://georgemandokoro.github.io/WHILL_Serial_API/cr2/)
 
 Covers Model CR2, Wheeled Robot Base and Electrical System Kit. Two-wheel drive with a single RS232C interface and the full command set.
 
 | | |
 |---|---|
-| [**Specification**](https://whill.github.io/WHILL_Serial_API/cr2/spec/) | Frame format, control commands, state data, timing and connector pinout. Markdown source: [`docs/cr2/spec/`](docs/cr2/spec/WHILL_Serial_API_Specification.md) |
-| [**Tester**](https://whill.github.io/WHILL_Serial_API/cr2/tester/) | Send commands to a real WHILL and watch the returned state data live. |
-| [**Emulator**](https://whill.github.io/WHILL_Serial_API/cr2/emulator/) | Emulates a WHILL device — parses host commands and serves Dataset0 / Dataset1, so you can develop without hardware. |
+| [**Specification**](https://georgemandokoro.github.io/WHILL_Serial_API/cr2/spec/) | Frame format, control commands, state data, timing and connector pinout. Markdown source: [`docs/cr2/spec/`](docs/cr2/spec/WHILL_Serial_API_Specification.md) |
+| [**Tester**](https://georgemandokoro.github.io/WHILL_Serial_API/cr2/tester/) | Send commands to a real WHILL and watch the returned state data live. |
+| [**Emulator**](https://georgemandokoro.github.io/WHILL_Serial_API/cr2/emulator/) | Emulates a WHILL device — parses host commands and serves Dataset0 / Dataset1, so you can develop without hardware. |
 
-### [Omni Platform](https://whill.github.io/WHILL_Serial_API/omni/)
+### [Omni Platform](https://georgemandokoro.github.io/WHILL_Serial_API/omni/)
 
 Two Model CR2 drive units mounted at 90° to each other, making the platform holonomic — it moves in any direction without changing the direction the wheels point. Controlled through two RS232C interfaces driven in sync, with a reduced command set.
 
 | | |
 |---|---|
-| [**Specification**](https://whill.github.io/WHILL_Serial_API/omni/spec/) | Companion document to the Model CR2 specification — the two interfaces, the motion model, the command set and the extended `SetVelocity` range. Markdown source: [`docs/omni/spec/`](docs/omni/spec/WHILL_Serial_API_Specification_Omni.md) |
-| [**Tester**](https://whill.github.io/WHILL_Serial_API/omni/tester/) | Drives both RS232C interfaces from one browser window — virtual joystick for translation, hold-to-rotate buttons, per-unit status and an interleaved two-unit log. |
+| [**Specification**](https://georgemandokoro.github.io/WHILL_Serial_API/omni/spec/) | Companion document to the Model CR2 specification — the two interfaces, the motion model, the command set and the extended `SetVelocity` range. Markdown source: [`docs/omni/spec/`](docs/omni/spec/WHILL_Serial_API_Specification_Omni.md) |
+| [**Tester**](https://georgemandokoro.github.io/WHILL_Serial_API/omni/tester/) | Drives both RS232C interfaces from one browser window — virtual joystick for translation, hold-to-rotate buttons, per-unit status and an interleaved two-unit log. |
 
 ## Requirements
 
@@ -50,7 +50,7 @@ The tester and emulator run entirely in the browser. No installation, no driver,
 
 ## Offline use
 
-Each tool is a **single self-contained HTML file** with no external dependency. Use the *Download* link on the [site](https://whill.github.io/WHILL_Serial_API/) to save it with a version-stamped filename (e.g. `WHILL_Serial_API_Tester_CR2_v1.01.html`), then open it from a local disk — it works on an isolated network with no internet access.
+Each tool is a **single self-contained HTML file** with no external dependency. Use the *Download* link on the [site](https://georgemandokoro.github.io/WHILL_Serial_API/) to save it with a version-stamped filename (e.g. `WHILL_Serial_API_Tester_CR2_v1.01.html`), then open it from a local disk — it works on an isolated network with no internet access.
 
 Your data never leaves your machine: the tools communicate only between the browser and the WHILL over the serial port.
 

@@ -10,7 +10,7 @@ The **WHILL Serial API** for the **Omni Platform** — the serial (RS232C) comma
 | | |
 |---|---|
 | **Applies to** | Omni Platform (4WD) |
-| **Base specification** | [WHILL Serial API Specification (Model CR2)](https://whill.github.io/WHILL_Serial_API/cr2/spec/) |
+| **Base specification** | [WHILL Serial API Specification (Model CR2)](https://georgemandokoro.github.io/WHILL_Serial_API/cr2/spec/) |
 | **Transport** | RS232C, 38400 bps, 8-N-2 — **two independent interfaces** |
 | **Serial API version** | 1.1 |
 | **Revision** | Rev 1 (2026-09-01) |
