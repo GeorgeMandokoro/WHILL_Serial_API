@@ -34,6 +34,7 @@ Two Model CR2 drive units mounted at 90° to each other, making the platform hol
 | | |
 |---|---|
 | [**Specification**](https://whill.github.io/WHILL_Serial_API/omni/spec/) | Companion document to the Model CR2 specification — the two interfaces, the motion model, the command set and the extended `SetVelocity` range. Markdown source: [`docs/omni/spec/`](docs/omni/spec/WHILL_Serial_API_Specification_Omni.md) |
+| [**Tester**](https://whill.github.io/WHILL_Serial_API/omni/tester/) | Drives both RS232C interfaces from one browser window — virtual joystick for translation, hold-to-rotate buttons, per-unit status and an interleaved two-unit log. |
 
 ## Requirements
 
@@ -66,7 +67,8 @@ docs/                       GitHub Pages root (Settings → Pages → main / doc
 │   └── emulator/index.html Single self-contained file
 └── omni/
     ├── index.html          Omni Platform landing page
-    └── spec/               Markdown source + exported index.html
+    ├── spec/               Markdown source + exported index.html
+    └── tester/index.html   Single self-contained file
 ```
 
 Each product gets its own directory under `docs/`. A new product is added as a sibling of `cr2/` — **never as a branch**, because GitHub Pages publishes only one branch and a second branch would not be served at all.

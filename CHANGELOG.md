@@ -18,6 +18,14 @@ Each specification also carries its own revision table in its final section.
 - `SetVelocity` (`0x08`) is documented with the Omni parameter range of −1500 … 1500 on both axes, widened from the Model CR2 so that the platform moves sideways and rotates as fast as it moves forward.
 
 
+### Omni Platform — Tester
+- v1.01 — first release. Drives both interfaces on one 100 ms cycle, all writes issued to the two ports in parallel: virtual joystick for translation, hold-to-rotate buttons, and a Swap A/B button that re-assigns the two ports without reconnecting.
+- Translation and rotation are exclusive. The speed sliders default to 50 / 50 and cap at 150, matching the scale of the hardware-verified reference tool; the drag starts on the knob so a stray click cannot command near-full deflection.
+- `SetPower` ON is sent in sets of two frames 100 ms apart, repeated for one second, so a sleeping unit's discarded wake-up frame does not lose the command.
+- Stops on release, on Space, on loss of window focus, and when either interface fails.
+- Status is shown per unit with a platform-level summary that takes the lower battery and flags any power / error / device-lock mismatch between the two units.
+- One interleaved log tagged per unit, with filters and periodic-frame suppression; CSV export gains a `Unit` column.
+
 ### Repository
 - Restructured for publication: everything served from `docs/` via GitHub Pages.
 - Laid out per product (`docs/cr2/`) with a product selector at the site root, so further products can be added as sibling directories on the same branch.

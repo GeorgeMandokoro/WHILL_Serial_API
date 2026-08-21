@@ -184,7 +184,7 @@
       top: 50%;
       margin-left: -25px;
       margin-top: -25px;
-      pointer-events: none;
+      cursor: grab;
     }
 
     .drive-readout {
@@ -274,7 +274,7 @@
 
     <!-- Fixed Header -->
     <header class="shell-header">
-      <h1>WHILL Serial API Tester — Omni Platform (v1.00)</h1>
+      <h1>WHILL Serial API Tester — Omni Platform (v1.01)</h1>
       <div class="conn-controls">
         <div class="unit-chip" id="chip-a"><span class="dot"></span><span class="tag">Unit A</span><span class="port" id="port-a">not connected</span></div>
         <div class="unit-chip" id="chip-b"><span class="dot"></span><span class="tag">Unit B</span><span class="port" id="port-b">not connected</span></div>
@@ -341,13 +341,13 @@
             <div>
               <div class="slider-block">
                 <label for="translation-speed">Translation speed</label>
-                <input type="range" id="translation-speed" min="0" max="300" step="10" value="100">
-                <span class="num" id="translation-speed-value">100</span><span class="unit">(0.4 km/h)</span>
+                <input type="range" id="translation-speed" min="0" max="150" step="10" value="50">
+                <span class="num" id="translation-speed-value">50</span><span class="unit">(platform 0.2 km/h)</span>
               </div>
               <div class="slider-block">
                 <label for="rotation-speed">Rotation speed</label>
                 <input type="range" id="rotation-speed" min="0" max="150" step="10" value="50">
-                <span class="num" id="rotation-speed-value">50</span><span class="unit">(0.2 km/h)</span>
+                <span class="num" id="rotation-speed-value">50</span><span class="unit">(X = 50, 0.2 km/h at the wheels)</span>
               </div>
               <div class="rotate-buttons">
                 <button id="rotate-ccw-button" type="button" disabled="" title="Hold to rotate counter-clockwise">↺ CCW</button>
@@ -439,8 +439,13 @@
 
     const SEND_INTERVAL_MS = 100;   // must stay below the 200 ms validity window
     const STOP_FRAME_REPEAT = 3;    // explicit zero frames on release
-    const POWER_ON_ATTEMPTS = 40;   // re-issue SetPower until 0x52 arrives
-    const POWER_ON_WAIT_MS = 25;
+    // SetPower ON is sent in sets of two: if WHILL is asleep the first frame is
+    // consumed as the wake-up trigger and discarded, and it needs at least 100 ms
+    // to resume. Sets repeat for one second, because powering on physically takes
+    // longer than the window in which the power-on response is returned.
+    const POWER_ON_SENDS_PER_SET = 2;
+    const POWER_ON_SEND_INTERVAL_MS = 100;
+    const POWER_ON_WINDOW_MS = 1000;
     const STALE_AFTER_MS = 1500;
 
     const SQRT2 = Math.SQRT2;
@@ -891,16 +896,26 @@
 
     async function powerOn(unit) {
       unit.powerOnSeen = false;
-      for (let attempt = 1; attempt <= POWER_ON_ATTEMPTS; attempt++) {
-        const ok = await writeTo(unit, frameSetPower(true), `SetPower ON (attempt ${attempt})`, false);
-        if (!ok) return false;
-        await sleep(POWER_ON_WAIT_MS);
-        if (unit.powerOnSeen) {
-          log(unit.key, 'sys', `Power on confirmed after ${attempt} attempt(s)`, null, false);
-          return true;
+      const deadline = performance.now() + POWER_ON_WINDOW_MS;
+      let sets = 0;
+
+      while (performance.now() < deadline && !unit.powerOnSeen) {
+        sets++;
+        for (let i = 1; i <= POWER_ON_SENDS_PER_SET; i++) {
+          const ok = await writeTo(unit, frameSetPower(true),
+                                   `SetPower ON (set ${sets}, ${i}/${POWER_ON_SENDS_PER_SET})`, false);
+          if (!ok) return false;
+          // The interval also serves as the window for the power-on response.
+          await sleep(POWER_ON_SEND_INTERVAL_MS);
+          if (unit.powerOnSeen) break;
         }
       }
-      log(unit.key, 'err', 'No power-on response — check the battery and the connection', null, false);
+
+      if (unit.powerOnSeen) {
+        log(unit.key, 'sys', `Power on confirmed after ${sets} set(s)`, null, false);
+        return true;
+      }
+      log(unit.key, 'err', `No power-on response within ${POWER_ON_WINDOW_MS} ms — press Power ON again`, null, false);
       return false;
     }
 
@@ -912,8 +927,7 @@
 
     powerOnBothButton.addEventListener('click', async () => {
       setPowerButtonsBusy(true);
-      await powerOn(unitA);
-      await powerOn(unitB);
+      await Promise.all([powerOn(unitA), powerOn(unitB)]);
       setPowerButtonsBusy(false);
       updateUI();
     });
@@ -921,8 +935,7 @@
     powerOffBothButton.addEventListener('click', async () => {
       stopDrive('power off');
       setPowerButtonsBusy(true);
-      await powerOff(unitA);
-      await powerOff(unitB);
+      await Promise.all([powerOff(unitA), powerOff(unitB)]);
       setPowerButtonsBusy(false);
       log(null, 'sys', 'Wait more than 5 s before powering on again.', null, false);
       renderStatus();
@@ -953,13 +966,17 @@
     // =====================================================================
 
     startSendingButton.addEventListener('click', async () => {
-      await writeTo(unitA, frameStartSendingData(100), 'StartSendingData (data set 1, 100 ms)', false);
-      await writeTo(unitB, frameStartSendingData(100), 'StartSendingData (data set 1, 100 ms)', false);
+      await Promise.all([
+        writeTo(unitA, frameStartSendingData(100), 'StartSendingData (data set 1, 100 ms)', false),
+        writeTo(unitB, frameStartSendingData(100), 'StartSendingData (data set 1, 100 ms)', false)
+      ]);
     });
 
     stopSendingButton.addEventListener('click', async () => {
-      await writeTo(unitA, frameStopSendingData(), 'StopSendingData', false);
-      await writeTo(unitB, frameStopSendingData(), 'StopSendingData', false);
+      await Promise.all([
+        writeTo(unitA, frameStopSendingData(), 'StopSendingData', false),
+        writeTo(unitB, frameStopSendingData(), 'StopSendingData', false)
+      ]);
     });
 
     // =====================================================================
@@ -1036,11 +1053,15 @@
     }
 
     async function sendDriveFrames(v, periodic) {
-      const t0 = performance.now();
-      await writeTo(unitA, frameSetVelocity(v.yA, v.x), `SetVelocity Y=${v.yA} X=${v.x}`, periodic);
-      const t1 = performance.now();
-      await writeTo(unitB, frameSetVelocity(v.yB, v.x), `SetVelocity Y=${v.yB} X=${v.x}`, periodic);
-      lastSkewMs = t1 - t0;
+      let doneA = 0;
+      let doneB = 0;
+      await Promise.all([
+        writeTo(unitA, frameSetVelocity(v.yA, v.x), `SetVelocity Y=${v.yA} X=${v.x}`, periodic)
+          .then(() => { doneA = performance.now(); }),
+        writeTo(unitB, frameSetVelocity(v.yB, v.x), `SetVelocity Y=${v.yB} X=${v.x}`, periodic)
+          .then(() => { doneB = performance.now(); })
+      ]);
+      lastSkewMs = Math.abs(doneA - doneB);
       renderDriveReadout(v);
       renderStatus();
     }
@@ -1127,22 +1148,23 @@
       knobEl.style.transform = `translate(${dx * range}px, ${-dy * range}px)`;
     }
 
-    joystickEl.addEventListener('pointerdown', (event) => {
+    // The drag starts on the knob, never on the pad, so that a stray click near
+    // the rim cannot command near-full deflection in a single step.
+    knobEl.addEventListener('pointerdown', (event) => {
       if (!canDrive() || driveMode === 'rotate') return;
-      joystickEl.setPointerCapture(event.pointerId);
-      applyPointer(event);
+      event.preventDefault();
+      knobEl.setPointerCapture(event.pointerId);
       startDrive('translate');
     });
 
-    joystickEl.addEventListener('pointermove', (event) => {
+    knobEl.addEventListener('pointermove', (event) => {
       if (driveMode !== 'translate') return;
       applyPointer(event);
     });
 
     const releaseJoystick = () => { if (driveMode === 'translate') stopDrive('joystick released'); };
-    joystickEl.addEventListener('pointerup', releaseJoystick);
-    joystickEl.addEventListener('pointercancel', releaseJoystick);
-    joystickEl.addEventListener('pointerleave', releaseJoystick);
+    knobEl.addEventListener('pointerup', releaseJoystick);
+    knobEl.addEventListener('pointercancel', releaseJoystick);
 
     // ---------- Rotation buttons: hold to rotate ----------
 
